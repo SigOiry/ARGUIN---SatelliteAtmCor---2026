@@ -101,3 +101,68 @@ Mapping exposed intertidal *Zostera noltei* requires stable spectral relationshi
 Sentinel-2 has already demonstrated the feasibility of mapping the PNBA’s coastal habitats, with a single-date supervised classification attaining more than 80% overall accuracy [@Pottier2021Mapping]. However, a static inventory cannot establish the timing, persistence or spatial pattern of ecological change [@Lyons2013TimeSeries; @Davies2024Trajectories]. Conversely, the pronounced differences observed between the 1986 and 2014 benthic surveys demonstrate the value of long-term comparison but do not resolve the intervening trajectory [@ElHacen2020LongTerm]. A radiometrically consistent satellite record could bridge these scales by tracking expansion, contraction and fragmentation at frequencies unattainable through field surveys alone [@Davies2024Phenology; @Davies2024Trajectories]. Without such a record, managers cannot confidently separate ecological change from retrieval artefacts, establish contemporary baselines, identify persistent hotspots of loss, evaluate conservation measures or target field surveillance [@Unsworth2019Challenges; @Duffy2019Observing]. More broadly, incomplete information on meadow status and condition remains a major barrier to seagrass conservation, and coordinated observing frameworks explicitly call for the integration of field measurements with repeated satellite mapping [@Unsworth2019Challenges; @Duffy2019Observing]. Resolving atmospheric-correction uncertainty is thus a prerequisite not only for classification accuracy, but also for defensible conservation assessments and policy decisions in the PNBA [@Song2001Atmospheric; @Doxani2023ACIX].
 
 This study addresses that bottleneck by establishing a locally validated workflow for mapping the intertidal seagrass meadows of Banc d’Arguin through time. First, we use field hyperspectral measurements acquired over representative seagrass and non-seagrass targets to evaluate Sentinel-2 reflectance produced by Sen2Cor and two alternative atmospheric-correction approaches. The field spectra are matched to the Sentinel-2 spectral response, enabling us to assess both spectral fidelity and temporal consistency and to identify the correction best suited to this dust-influenced coastal environment. Second, we adapt the ICE CREAMS classification framework to the selected reflectance product, so that the habitat model operates on radiometrically coherent inputs rather than on correction-dependent spectral artefacts. Third, we apply the resulting workflow to the Sentinel-2 archive to reconstruct a time series of seagrass distribution and quantify the spatial and temporal dynamics of the intertidal meadow. The following sections describe the field campaign, satellite processing and atmospheric-correction comparison, the adapted classification workflow, and the procedures used to validate maps and derive change metrics.
+
+# Methods
+
+## Study area
+
+The study was conducted in the Parc National du Banc d’Arguin (PNBA), on the north-western coast of Mauritania. The park comprises an extensive system of islands, shallow channels and broad intertidal flats at the interface between the Sahara and the eastern Atlantic [@Wolff1993Banc; @Pottier2021Mapping]. The present analysis focused on the exposed intertidal platform within Sentinel-2 tile 28QCH. The spatial domain was defined by the project intertidal mask in WGS 84 / UTM zone 28N (EPSG:32628), and all field positions and image products were transformed to this common projected coordinate system before spatial extraction.
+
+Field work was undertaken during 20--30 March 2026, with hyperspectral sampling recorded from 22 to 29 March at Ebel Kheiznaya, Baie d’Aouatif, Niroumi, Arel and Zira. @fig-study-area places this sampling within the regional and park-wide context. Panel b shows the intertidal analysis domain and campaign stations, while panels c and d locate the eight atmospheric-correction validation stations on the Sentinel-2B image acquired on 27 March, the same date as the matchup measurements. The two enlarged panels are necessary because the coastal sand references (AC01--AC02) and the offshore intertidal targets (AC03--AC08) were separated by approximately 22 km.
+
+![Study area and field-sampling design. **a**, Location of Banc d’Arguin on the north-western coast of Mauritania. **b**, Intertidal analysis domain (turquoise) and field stations occupied during the March 2026 campaign. **c**, Offshore validation stations AC03--AC08. **d**, Coastal validation stations AC01--AC02. Panels **c** and **d** use the Sentinel-2B Level-2A true-colour composite acquired on 27 March 2026; no contextual satellite imagery from outside the field-campaign window is used. Country boundaries are from Natural Earth.](figures/figure1_study_area.png){#fig-study-area fig-alt="Four-panel map locating Banc d'Arguin in Mauritania, showing the intertidal analysis domain and field stations, with two detailed Sentinel-2 views of the validation sites." width="100%"}
+
+## Field data acquisition and spectral processing
+
+Surface reflectance was measured with a portable ASD field spectroradiometer over the range 400--900 nm. The campaign acquisition configuration used 50 scans for the white reference, 20 scans for the dark-current measurement and 50 scans for each target measurement; 20 spectra were stored in each acquisition batch. Sampling encompassed the dominant exposed intertidal surfaces encountered during the campaign, including *Zostera noltei*, dry and white sand, microphytobenthos-rich mud and algal mud. Station coordinates, acquisition date and target description were linked to the spectral records using the field log and handheld-GPS waypoints.
+
+The atmospheric-correction validation was conducted at eight stations (AC01--AC08) on 27 March 2026, contemporaneously with the Sentinel-2B overpass. At each station, five batches of 20 spectra were distributed within an area corresponding approximately to one 10-m Sentinel-2 pixel, providing a station-scale spectrum that reduced sensitivity to centimetre-scale surface heterogeneity. AC01--AC02 sampled dry coastal sand; AC03--AC04 sampled microphytobenthos-rich mud; AC05 sampled algal mud; AC06 sampled white sand; and AC07--AC08 sampled exposed seagrass.
+
+To make the field and satellite measurements spectrally comparable, each hyperspectral station spectrum was convolved with the official 2024 Sentinel-2B spectral response function, $S_b(\lambda)$, for band $b$:
+
+$$
+R_b = \frac{\sum_{\lambda} R(\lambda)S_b(\lambda)}{\sum_{\lambda}S_b(\lambda)},
+$$
+
+where $R(\lambda)$ is field-measured reflectance at wavelength $\lambda$. Only bands whose response functions overlapped the field instrument range were retained, yielding nine MSI bands from B1 to B8A. @fig-field-spectra shows both the original station spectra and their Sentinel-2B-equivalent values. The convolution preserves the large reflectance contrast among surfaces while representing the spectral information actually available to the satellite comparison.
+
+![Field spectra used for atmospheric-correction validation. **a**, Mean hyperspectral reflectance measured at the eight validation stations on 27 March 2026. **b**, The same spectra after convolution with Sentinel-2B spectral response functions for bands B1--B8A. Colours identify stations and are used consistently in the study-area map.](figures/figure2_field_spectra.png){#fig-field-spectra fig-alt="Two-panel plot showing eight field reflectance spectra from 400 to 900 nanometres and the same spectra resampled to nine Sentinel-2B bands." width="100%"}
+
+## Satellite imagery and atmospheric correction
+
+The matchup used Sentinel-2B MSI acquisition `S2B_MSIL2A_20260327T113319_N0512_R080_T28QCH_20260327T152639`, sensed at 11:45:53 UTC on 27 March 2026. The Level-2A product belonged to processing baseline 05.12 and reported 0.0149% cloudy pixels over tile 28QCH. Restricting the initial comparison to this acquisition eliminated the multi-day surface-change term that would be introduced by imagery outside the field-campaign window.
+
+Two independently corrected reflectance products were evaluated. First, the operational Level-2A bottom-of-atmosphere product generated with Sen2Cor was read from the SAFE archive [@MainKnorn2017Sen2Cor; @ESA2021Sen2CorATBD]. Digital numbers were converted to reflectance using the product metadata, $(DN-1000)/10{,}000$. Each band was resampled bilinearly to a common 10-m grid before extraction at the field coordinates.
+
+Second, the corresponding Level-1C acquisition was processed with ACOLITE (generic GitHub build `c2026-04-07T11:45:24`) using dark spectrum fitting [@Vanhellemont2019DSF]. Aerosol optical thickness was estimated in tiled mode using 600 × 600-pixel tiles, the minimum-DRMSD aerosol-model selection and a three-pixel smoothing kernel. Processing used the ACOLITE 2021 lookup tables, produced 10-m surface reflectance (`rhos`) and did not apply adjacency or residual-glint correction. ACOLITE wavelengths were associated with the nearest Sentinel-2B equivalent band when their central wavelengths differed by no more than 5 nm. For both processors, reflectance was extracted at the same GPS location for each validation station and paired with its band-convolved field value.
+
+Following the quality-control exclusion implemented in the source analysis, AC03 was removed before metric calculation; the retained dataset comprised seven stations and nine bands, or 63 paired observations per atmospheric-correction processor. <!-- Before submission, document the field-quality reason for excluding AC03. -->
+
+## Statistical analysis
+
+Agreement was evaluated using descriptive metrics calculated across the 63 station-by-band pairs for each processor. Let $F_i$ be ASD reflectance, $S_i$ satellite-derived reflectance and $d_i=S_i-F_i$ for pair $i$. An ordinary least-squares regression of $S_i$ on $F_i$ provided the coefficient of determination ($R^2$). Absolute radiometric agreement was quantified as root-mean-square deviation (RMSD), mean bias and mean absolute deviation (MAD):
+
+$$
+\mathrm{RMSD}=\sqrt{\frac{1}{n}\sum_{i=1}^{n}d_i^2},\qquad
+\mathrm{bias}=\frac{1}{n}\sum_{i=1}^{n}d_i,\qquad
+\mathrm{MAD}=\frac{1}{n}\sum_{i=1}^{n}|d_i|.
+$$
+
+Relative percentage difference (RPD) and absolute percentage difference (APD) were calculated as
+
+$$
+\mathrm{RPD}=\frac{100}{n}\sum_{i=1}^{n}\frac{d_i}{F_i},\qquad
+\mathrm{APD}=\frac{100}{n}\sum_{i=1}^{n}\frac{|d_i|}{|F_i|}.
+$$
+
+These quantities were used as complementary diagnostics: $R^2$ measures the preservation of variation among field spectra, whereas RMSD, bias, MAD, RPD and APD measure proximity to the 1:1 relationship. Because bands were nested within stations, the comparison was treated as a processor-performance assessment rather than as an inferential test of independent observations. All reflectance values are dimensionless. Figure generation and metric calculation were scripted directly from the archived field spectra, official Sentinel-2B response functions and georeferenced image products.
+
+# Results
+
+## Field--satellite reflectance agreement on 27 March 2026
+
+Both atmospheric-correction products preserved the strong variation among the exposed intertidal reference surfaces, but their radiometric agreement with the ASD measurements differed (@fig-matchup). Sen2Cor produced the higher coefficient of determination ($R^2=0.935$ versus 0.920 for ACOLITE), indicating slightly tighter linear covariation with the field spectra. However, its fitted relationship was displaced above the 1:1 line, particularly for the brighter near-infrared observations. This displacement resulted in a positive mean bias of 0.0448, an RMSD of 0.0619 and an MAD of 0.0464. The corresponding relative errors were 25.2% for RPD and 25.8% for APD.
+
+ACOLITE yielded a lower positive bias (0.0152) and substantially smaller absolute errors (RMSD = 0.0389; MAD = 0.0267). Its RPD and APD were 11.9% and 17.0%, respectively. Thus, although Sen2Cor explained 1.5 percentage points more variance, ACOLITE reduced RMSD by 37%, MAD by 43% and APD by 34% relative to Sen2Cor. The comparison therefore distinguishes correlation from radiometric fidelity: Sen2Cor reproduced the ordering of surface reflectances marginally better, whereas ACOLITE retrieved values that were consistently closer to the same-day field measurements across the observed reflectance range.
+
+![Same-day matchup between ASD field reflectance and satellite-derived reflectance on 27 March 2026. **a**, Sen2Cor Level-2A reflectance. **b**, ACOLITE dark-spectrum-fitting reflectance. Each panel contains 63 paired observations from seven validation stations and nine Sentinel-2B bands; AC03 was excluded during quality control. Point colour denotes MSI band and symbol denotes surface type. The dashed line is the 1:1 relationship and the solid line is the ordinary least-squares fit. RMSD, root-mean-square deviation; MAD, mean absolute deviation; APD, absolute percentage difference.](figures/figure3_asd_satellite_matchup.png){#fig-matchup fig-alt="Two-panel scatter plot comparing field and satellite reflectance for Sen2Cor and ACOLITE. ACOLITE points lie closer to the one-to-one line and have lower error metrics." width="100%"}

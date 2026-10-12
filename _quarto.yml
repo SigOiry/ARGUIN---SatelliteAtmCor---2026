@@ -1,6 +1,8 @@
 project:
   type: manuscript
   output-dir: docs
+  render:
+    - "index.qmd"
   post-render:
     - python postprocess_docx_affiliations.py
 manuscript: 
@@ -12,8 +14,6 @@ format:
   docx:
     output-file: "MadaKapPy_Paper_2026"
     reference-doc: quarto_template.docx
-render: 
-  - "index.qmd"
 resources:
   - "!*.qmd"
   - "!*.ipynb"

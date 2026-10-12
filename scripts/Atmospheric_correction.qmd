@@ -1,0 +1,1925 @@
+---
+title: "Atmospheric Correction"
+format:
+  html:
+    toc: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| label: setup
+#| include: false
+#| message: false
+#| warning: false
+
+required_packages <- c(
+  "dplyr",
+  "ggiraph",
+  "ggplot2",
+  "htmltools",
+  "leaflet",
+  "patchwork",
+  "readxl",
+  "stringr",
+  "tidyr"
+)
+
+missing_packages <- required_packages[
+  !vapply(required_packages, requireNamespace, logical(1), quietly = TRUE)
+]
+
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(ggiraph)
+  library(ggplot2)
+  library(readxl)
+  library(leaflet)
+  library(htmltools)
+  library(stringr)
+  library(tidyr)
+})
+
+station_key <- function(x) {
+  str_remove_all(str_to_upper(x), "_")
+}
+
+comment_labels <- c(
+  zn = "Z. noltei",
+  cn = "Cymodocea nodosa",
+  sand = "Sand",
+  shell = "Shell",
+  worm_reef = "Worm reef",
+  spartina = "Spartina",
+  mangrove = "Mangrove",
+  vaucheria = "Vaucheria",
+  cyano = "Cyanobacteria",
+  green_algae = "Green algae",
+  dry_sand = "Dry sand",
+  mpb_mud = "MPB mud",
+  mbp_mud = "MPB mud",
+  algae_mud = "Green algae",
+  white_sand = "Sand",
+  seagrass = "Z. noltei"
+)
+
+normalize_comment_code <- function(x) {
+  code <- str_trim(str_to_lower(x))
+  code <- str_replace_all(code, "\\s+", "_")
+
+  dplyr::recode(
+    code,
+    algae_on_mud = "green_algae",
+    algae_mud = "green_algae",
+    green_algae = "green_algae",
+    seagrass = "zn",
+    zostera_noltei = "zn",
+    zn = "zn",
+    mpb = "mpb_mud",
+    mbp = "mpb_mud",
+    mbp_mud = "mpb_mud",
+    mpb_mud = "mpb_mud",
+    microphytobenthos_mud = "mpb_mud",
+    white_sand = "sand",
+    sand = "sand",
+    .default = code
+  )
+}
+
+label_comment <- function(x) {
+  labelled <- unname(comment_labels[normalize_comment_code(x)])
+  fallback <- str_to_sentence(str_replace_all(x, "_", " "))
+  ifelse(is.na(labelled), fallback, labelled)
+}
+
+reflectance_avg <- read.table(
+  "Data/ASD/202603_Reflectance_avg.txt",
+  header = TRUE,
+  check.names = FALSE
+)
+
+srf_path <- "Data/COPE-GSEG-EOPG-TN-15-0007 - Sentinel-2 Spectral Response Functions 2024 - 4.0.xlsx"
+s2a_srf <- read_excel(srf_path, sheet = "Spectral Responses (S2A)")
+s2a_eq_wavelengths <- read_excel(
+  srf_path,
+  sheet = "Equivalent Wavelengths",
+  skip = 1,
+  col_names = c("band", "S2A", "S2B", "S2C", "blank1", "blank2", "definition")
+) %>%
+  filter(str_detect(band, "^B")) %>%
+  transmute(
+    band = str_replace(band, "^B0", "B"),
+    band_center = as.numeric(S2A)
+  )
+
+asd_stations <- tibble(
+  station = names(reflectance_avg)[-1],
+  station_key = station_key(station)
+)
+
+asd_log <- read.delim(
+  "Data/ASD/202603_Seagrass_cover.txt",
+  sep = "\t",
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+gps_log <- read_excel("Data/GPS/Info spectral measure_biomass core_BdA 2026.xlsx")
+
+gps_points <- gps_log %>%
+  transmute(
+    station_key = station_key(station),
+    gps_waypoint = suppressWarnings(as.integer(waypoint)),
+    acquisition_date = as.Date(date),
+    location = location,
+    lat = suppressWarnings(as.numeric(lat)),
+    lon = suppressWarnings(as.numeric(lon))
+  ) %>%
+  filter(!is.na(lat), !is.na(lon)) %>%
+  distinct(station_key, gps_waypoint, .keep_all = TRUE)
+
+gps_by_waypoint <- gps_points %>%
+  filter(!is.na(gps_waypoint)) %>%
+  distinct(gps_waypoint, .keep_all = TRUE) %>%
+  select(gps_waypoint, acquisition_date, location, lat, lon)
+
+gps_by_station <- gps_points %>%
+  filter(station_key != "") %>%
+  distinct(station_key, .keep_all = TRUE) %>%
+  select(station_key, acquisition_date, location, lat, lon)
+
+mauritania_samples <- asd_log %>%
+  transmute(
+    station = station,
+    station_key = station_key(station),
+    gps_waypoint = suppressWarnings(as.integer(gps)),
+    target = label_comment(comment)
+  ) %>%
+  semi_join(asd_stations, by = "station_key") %>%
+  left_join(
+    gps_by_waypoint %>%
+      rename_with(~ paste0(.x, "_waypoint"), c(acquisition_date, location, lat, lon)),
+    by = "gps_waypoint"
+  ) %>%
+  left_join(
+    gps_by_station %>%
+      rename_with(~ paste0(.x, "_station"), c(acquisition_date, location, lat, lon)),
+    by = "station_key"
+  ) %>%
+  mutate(
+    acquisition_date = coalesce(acquisition_date_waypoint, acquisition_date_station),
+    location = coalesce(location_waypoint, location_station),
+    lat = coalesce(lat_waypoint, lat_station),
+    lon = coalesce(lon_waypoint, lon_station)
+  ) %>%
+  select(station, station_key, gps_waypoint, target, acquisition_date, location, lat, lon) %>%
+  filter(
+    !is.na(lat),
+    !is.na(lon),
+    between(lat, 14, 28),
+    between(lon, -18, -4)
+  ) %>%
+  mutate(
+    map_target = ifelse(target == "Dry sand", "Sand", target),
+    date_group = format(acquisition_date, "%Y-%m-%d"),
+    popup = paste0(
+      "<strong>", htmlEscape(station), "</strong><br>",
+      htmlEscape(map_target), "<br>",
+      htmlEscape(location), "<br>",
+      ifelse(is.na(acquisition_date), "NA", format(acquisition_date, "%Y-%m-%d"))
+    )
+  ) %>%
+  arrange(acquisition_date, station)
+
+date_groups <- sort(unique(mauritania_samples$date_group))
+target_levels <- sort(unique(mauritania_samples$target))
+target_colors <- setNames(
+  grDevices::hcl.colors(length(target_levels), "Dark 3"),
+  target_levels
+)
+target_palette <- colorFactor(
+  palette = target_colors,
+  domain = target_levels
+)
+map_target_levels <- sort(unique(mauritania_samples$map_target))
+map_target_colors <- setNames(target_colors[map_target_levels], map_target_levels)
+map_target_palette <- colorFactor(
+  palette = map_target_colors,
+  domain = map_target_levels
+)
+
+ac_station_lookup <- asd_log %>%
+  transmute(
+    station = station,
+    station_key = station_key(station),
+    target = label_comment(comment)
+  ) %>%
+  filter(str_detect(station, "^AC0[1-8]$")) %>%
+  distinct(station_key, .keep_all = TRUE)
+
+ac_spectra_hyper <- reflectance_avg %>%
+  select(wl, matches("^AC_", ignore.case = TRUE)) %>%
+  pivot_longer(
+    cols = -wl,
+    names_to = "station_column",
+    values_to = "reflectance"
+  ) %>%
+  mutate(station_key = station_key(station_column)) %>%
+  left_join(ac_station_lookup, by = "station_key") %>%
+  filter(!is.na(station)) %>%
+  mutate(
+    station = factor(station, levels = paste0("AC0", 1:8)),
+    tooltip = paste0(
+      as.character(station),
+      "<br>",
+      target,
+      "<br>",
+      wl,
+      " nm",
+      "<br>Reflectance: ",
+      signif(reflectance, 4)
+    )
+  )
+
+asd_wl_min <- min(ac_spectra_hyper$wl, na.rm = TRUE)
+asd_wl_max <- max(ac_spectra_hyper$wl, na.rm = TRUE)
+
+s2a_srf_long <- s2a_srf %>%
+  rename(wl = SR_WL) %>%
+  pivot_longer(
+    cols = -wl,
+    names_to = "band_column",
+    values_to = "srf"
+  ) %>%
+  mutate(
+    band = str_remove(band_column, "^S2A_SR_AV_")
+  )
+
+usable_s2a_bands <- s2a_srf_long %>%
+  group_by(band) %>%
+  summarise(
+    overlap_weight = sum(
+      ifelse(dplyr::between(wl, asd_wl_min, asd_wl_max), srf, 0),
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  ) %>%
+  filter(overlap_weight > 0) %>%
+  inner_join(s2a_eq_wavelengths, by = "band") %>%
+  arrange(band_center)
+
+ac_spectra_resampled <- ac_spectra_hyper %>%
+  select(station, target, wl, reflectance) %>%
+  inner_join(
+    s2a_srf_long %>%
+      inner_join(
+        usable_s2a_bands %>% select(band, band_center),
+        by = "band"
+      ) %>%
+      filter(dplyr::between(wl, asd_wl_min, asd_wl_max)),
+    by = "wl",
+    relationship = "many-to-many"
+  ) %>%
+  group_by(station, target, band, band_center) %>%
+  summarise(
+    reflectance = sum(reflectance * srf, na.rm = TRUE) / sum(srf, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    station = factor(station, levels = paste0("AC0", 1:8)),
+    band = factor(band, levels = usable_s2a_bands$band),
+    tooltip = paste0(
+      as.character(station),
+      "<br>",
+      target,
+      "<br>",
+      as.character(band),
+      " (",
+      round(band_center, 1),
+      " nm)",
+      "<br>Reflectance: ",
+      signif(reflectance, 4)
+    )
+  )
+```
+
+Field ASD spectra were collected across the Banc d'Arguin intertidal area to sample the dominant benthic targets, including bare sediments, seagrasses, algae, and biogenic reef structures (@fig-Map_ASD_samples). 
+
+```{r}
+#| fig-cap: Map of ASD sampling stations in Mauritania. Only stations with valid GPS coordinates are shown.
+#| label: fig-Map_ASD_samples
+#| echo: false
+#| error: false
+#| message: false
+#| eval: true
+#| warning: false
+#| out-width: "95%"
+
+leaflet(mauritania_samples, options = leafletOptions(preferCanvas = TRUE)) %>%
+  addProviderTiles(providers$Esri.WorldImagery) %>%
+  {
+    map <- .
+    for (date_value in date_groups) {
+      date_data <- mauritania_samples %>%
+        filter(date_group == date_value)
+
+      map <- map %>%
+        addCircleMarkers(
+          data = date_data,
+          lng = ~lon,
+          lat = ~lat,
+          radius = 7,
+          color = ~map_target_palette(map_target),
+          fillColor = ~map_target_palette(map_target),
+          fillOpacity = 0.9,
+          stroke = TRUE,
+          weight = 1,
+          popup = ~popup,
+          label = ~station,
+          group = date_value
+        )
+    }
+    map
+  } %>%
+  addLayersControl(
+    overlayGroups = date_groups,
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    pal = map_target_palette,
+    values = mauritania_samples$map_target,
+    title = "Target",
+    opacity = 0.95
+  ) %>%
+  addScaleBar(position = "bottomleft") %>%
+  fitBounds(
+    lng1 = min(mauritania_samples$lon),
+    lat1 = min(mauritania_samples$lat),
+    lng2 = max(mauritania_samples$lon),
+    lat2 = max(mauritania_samples$lat)
+  )
+```
+
+The atmospheric-correction assessment focuses on the AC stations measured on 2026-03-27, coincident with a Sentinel-2 acquisition. Hyperspectral ASD measurements were resampled with Sentinel-2 spectral response functions to provide band-compatible in situ reflectance for comparison with satellite products (@fig-AC_spectra).
+
+```{r}
+#| label: fig-AC_spectra
+#| fig-cap: "Spectral reflectance of the 8 ASD stations used for atmospheric correction validation. Both the original hyperspectral reflectance and the resampled reflectance at Sentinel-2 wavelengths are shown."
+#| echo: false
+#| error: false
+#| message: false
+#| eval: true
+#| warning: false
+#| out-width: "95%"
+
+hyperspectral_plot <- ggplot(
+  ac_spectra_hyper,
+  aes(
+    x = wl,
+    y = reflectance,
+    color = target,
+    group = station
+  )
+) +
+  geom_line_interactive(
+    aes(
+      tooltip = tooltip,
+      data_id = station
+    ),
+    linewidth = 0.9,
+    alpha = 0.9
+  ) +
+  scale_color_manual(values = target_colors, drop = FALSE) +
+  labs(
+    x = "Wavelength (nm)",
+    y = "Reflectance",
+    color = "Target"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "right",
+    panel.grid.minor = element_blank()
+  )
+
+hyperspectral_widget <- girafe(
+  ggobj = hyperspectral_plot,
+  width_svg = 9,
+  height_svg = 5
+) %>%
+  girafe_options(
+    opts_hover(css = "stroke-width:2.2px;"),
+    opts_hover_inv(css = "opacity:0.15;"),
+    opts_toolbar(saveaspng = TRUE)
+  )
+
+resampled_plot <- ggplot(
+  ac_spectra_resampled,
+  aes(
+    x = band_center,
+    y = reflectance,
+    color = target,
+    group = station
+  )
+) +
+  geom_line(linewidth = 0.8, alpha = 0.8) +
+  geom_point_interactive(
+    aes(
+      tooltip = tooltip,
+      data_id = paste(station, band, sep = "_")
+    ),
+    size = 2.4
+  ) +
+  scale_color_manual(values = target_colors, drop = FALSE) +
+  scale_x_continuous(
+    breaks = usable_s2a_bands$band_center,
+    labels = round(usable_s2a_bands$band_center)
+  ) +
+  labs(
+    x = "Wavelength (nm)",
+    y = "Reflectance",
+    color = "Target"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "right",
+    panel.grid.minor = element_blank()
+  )
+
+resampled_widget <- girafe(
+  ggobj = resampled_plot,
+  width_svg = 9,
+  height_svg = 5
+) %>%
+  girafe_options(
+    opts_hover(css = "stroke-width:2.2px;"),
+    opts_hover_inv(css = "opacity:0.15;"),
+    opts_toolbar(saveaspng = TRUE)
+  )
+
+tagList(
+  tags$div(
+    class = "spectra-toggle",
+    tags$span("Show:"),
+    tags$label(
+      tags$input(
+        type = "radio",
+        name = "ac-spectra-view",
+        value = "hyperspectral",
+        checked = NA
+      ),
+      "Hyperspectral reflectance"
+    ),
+    tags$label(
+      tags$input(
+        type = "radio",
+        name = "ac-spectra-view",
+        value = "resampled"
+      ),
+      "S2A resampled reflectance"
+    )
+  ),
+  tags$div(id = "ac-spectra-hyperspectral", hyperspectral_widget),
+  tags$div(
+    id = "ac-spectra-resampled",
+    style = "display:none;",
+    resampled_widget
+  ),
+  tags$script(HTML(
+    "(function () {
+      const radios = document.querySelectorAll('input[name=\"ac-spectra-view\"]');
+      const hyper = document.getElementById('ac-spectra-hyperspectral');
+      const resampled = document.getElementById('ac-spectra-resampled');
+      function updateView() {
+        const checked = document.querySelector('input[name=\"ac-spectra-view\"]:checked');
+        if (!checked) return;
+        hyper.style.display = checked.value === 'hyperspectral' ? '' : 'none';
+        resampled.style.display = checked.value === 'resampled' ? '' : 'none';
+      }
+      radios.forEach(function (radio) {
+        radio.addEventListener('change', updateView);
+      });
+      updateView();
+    })();"
+  ))
+)
+```
+
+Satellite reflectance was extracted at ASD station coordinates from two atmospheric correction products: the standard Sentinel-2 Level-2A Sen2Cor product and ACOLITE-derived surface reflectance (`rhos`). Matchups were assessed using linear regression alongside error metrics comparing image-derived reflectance with ASD measurements resampled to Sentinel-2 spectral bands.
+
+@fig-S2_matchup presents the matchup results for both atmospheric correction approaches—Sen2Cor (left) and ACOLITE (right)—using imagery acquired on the same day as the field measurements (27 March 2026). Both methods exhibit strong agreement with ASD data, with high coefficients of determination (R² = 0.935 for Sen2Cor and 0.92 for ACOLITE).
+
+For low reflectance values (R < 0.3), Sen2Cor-derived reflectance is relatively close to ASD measurements; however, the divergence increases at higher reflectance levels. In contrast, ACOLITE shows consistent agreement with ASD across the full reflectance range.
+
+Although Sen2Cor yields a slightly higher R², it departs more from the 1:1 relationship. Conversely, ACOLITE remains more closely aligned with the 1:1 line, a pattern also supported by the other error metrics, indicating a better overall agreement with field measurements.
+
+```{r}
+#| label: s2-matchup-data
+#| include: false
+#| message: false
+#| warning: false
+#| cache: true
+
+if (!requireNamespace("MapRs", quietly = TRUE)) {
+  stop("MapRs must be installed before rendering this section.")
+}
+if (!requireNamespace("terra", quietly = TRUE)) {
+  stop("terra must be installed before rendering this section.")
+}
+
+library(terra)
+
+ac_points <- mauritania_samples %>%
+  filter(station %in% paste0("AC0", 1:8)) %>%
+  select(station, target, lon, lat) %>%
+  distinct() %>%
+  arrange(station)
+
+s2b_srf <- read_excel(srf_path, sheet = "Spectral Responses (S2B)")
+s2b_eq_wavelengths <- read_excel(
+  srf_path,
+  sheet = "Equivalent Wavelengths",
+  skip = 1,
+  col_names = c("band", "S2A", "S2B", "S2C", "blank1", "blank2", "definition")
+) %>%
+  filter(str_detect(band, "^B")) %>%
+  transmute(
+    band = str_replace(band, "^B0", "B"),
+    band_center = as.numeric(S2B)
+  )
+
+s2b_srf_long <- s2b_srf %>%
+  rename(wl = SR_WL) %>%
+  pivot_longer(
+    cols = -wl,
+    names_to = "band_column",
+    values_to = "srf"
+  ) %>%
+  mutate(
+    band = str_remove(band_column, "^S2B_SR_AV_")
+  )
+
+usable_s2b_bands <- s2b_srf_long %>%
+  group_by(band) %>%
+  summarise(
+    overlap_weight = sum(
+      ifelse(dplyr::between(wl, asd_wl_min, asd_wl_max), srf, 0),
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  ) %>%
+  filter(overlap_weight > 0) %>%
+  inner_join(s2b_eq_wavelengths, by = "band") %>%
+  arrange(band_center)
+
+ac_spectra_resampled_s2b <- ac_spectra_hyper %>%
+  select(station, target, wl, reflectance) %>%
+  inner_join(
+    s2b_srf_long %>%
+      inner_join(
+        usable_s2b_bands %>% select(band, band_center),
+        by = "band"
+      ) %>%
+      filter(dplyr::between(wl, asd_wl_min, asd_wl_max)),
+    by = "wl",
+    relationship = "many-to-many"
+  ) %>%
+  group_by(station, target, band, band_center) %>%
+  summarise(
+    reflectance = sum(reflectance * srf, na.rm = TRUE) / sum(srf, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+stable_reference_points <- gps_log %>%
+  transmute(
+    station = station,
+    station_key = station_key(station),
+    cover = suppressWarnings(as.numeric(cover)),
+    comment_code = normalize_comment_code(comment),
+    target = "Sand",
+    Zone = ifelse(is.na(Zone) | str_trim(Zone) == "", "Unknown", Zone),
+    lat = suppressWarnings(as.numeric(lat)),
+    lon = suppressWarnings(as.numeric(lon))
+  ) %>%
+  semi_join(asd_stations, by = "station_key") %>%
+  filter(
+    !is.na(lat),
+    !is.na(lon),
+    between(lat, 14, 28),
+    between(lon, -18, -4)
+  ) %>%
+  filter(
+    comment_code %in% c("sand", "dry_sand"),
+    station_key != "D06_G"
+  ) %>%
+  distinct(station_key, .keep_all = TRUE) %>%
+  select(station, target, Zone, lat, lon) %>%
+  arrange(Zone, station)
+
+stable_reference_station_lookup <- stable_reference_points %>%
+  mutate(station_key = station_key(station)) %>%
+  select(station, station_key, target, Zone)
+
+stable_spectra_resampled_s2b <- reflectance_avg %>%
+  pivot_longer(
+    cols = -wl,
+    names_to = "station_column",
+    values_to = "reflectance"
+  ) %>%
+  mutate(station_key = station_key(station_column)) %>%
+  inner_join(stable_reference_station_lookup, by = "station_key") %>%
+  select(station, Zone, target, wl, reflectance) %>%
+  inner_join(
+    s2b_srf_long %>%
+      inner_join(
+        usable_s2b_bands %>% select(band, band_center),
+        by = "band"
+      ) %>%
+      filter(dplyr::between(wl, asd_wl_min, asd_wl_max)),
+    by = "wl",
+    relationship = "many-to-many"
+  ) %>%
+  group_by(station, Zone, target, band, band_center) %>%
+  summarise(
+    reflectance = sum(reflectance * srf, na.rm = TRUE) / sum(srf, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+stable_zone_summary <- stable_reference_points %>%
+  count(Zone, name = "n_stations") %>%
+  arrange(Zone)
+
+stable_zone_summary_text <- paste0(
+  stable_zone_summary$Zone,
+  " (",
+  stable_zone_summary$n_stations,
+  ")",
+  collapse = ", "
+)
+
+format_matchup_metric <- function(x, suffix = "") {
+  if (!is.finite(x)) {
+    return(paste0("NA", suffix))
+  }
+
+  paste0(format(round(x, 3), nsmall = 3, trim = TRUE), suffix)
+}
+
+compute_matchup_metrics <- function(df, image_label) {
+  difference <- df$s2_reflectance - df$asd_reflectance
+  valid_pct <- !is.na(df$asd_reflectance) & df$asd_reflectance != 0 & !is.na(difference)
+  panel_min <- min(c(0, df$asd_reflectance, df$s2_reflectance), na.rm = TRUE)
+  panel_max <- max(c(df$asd_reflectance, df$s2_reflectance), na.rm = TRUE)
+  panel_span <- panel_max - panel_min
+
+  if (!is.finite(panel_span) || panel_span == 0) {
+    panel_span <- max(abs(panel_max), 1) * 0.1
+  }
+
+  rpd_value <- if (any(valid_pct)) {
+    mean(difference[valid_pct] / df$asd_reflectance[valid_pct], na.rm = TRUE) * 100
+  } else {
+    NA_real_
+  }
+
+  apd_value <- if (any(valid_pct)) {
+    mean(abs(difference[valid_pct]) / abs(df$asd_reflectance[valid_pct]), na.rm = TRUE) * 100
+  } else {
+    NA_real_
+  }
+
+  r2_value <- summary(lm(s2_reflectance ~ asd_reflectance, data = df))$r.squared
+  rmsd_value <- sqrt(mean(difference^2, na.rm = TRUE))
+  bias_value <- mean(difference, na.rm = TRUE)
+  mad_value <- mean(abs(difference), na.rm = TRUE)
+
+  tibble(
+    r2 = r2_value,
+    rmsd = rmsd_value,
+    bias = bias_value,
+    mad = mad_value,
+    rpd = rpd_value,
+    apd = apd_value,
+    panel_min = panel_min,
+    panel_max = panel_max,
+    x = panel_min + 0.02 * panel_span,
+    y = panel_max - 0.02 * panel_span,
+    label = paste(
+      paste0("S2 image: ", image_label),
+      paste0("R² = ", format_matchup_metric(r2_value)),
+      paste0("RMSD = ", format_matchup_metric(rmsd_value)),
+      paste0("bias = ", format_matchup_metric(bias_value)),
+      paste0("MAD = ", format_matchup_metric(mad_value)),
+      paste0("RPD = ", format_matchup_metric(rpd_value, " %")),
+      paste0("APD = ", format_matchup_metric(apd_value, " %")),
+      sep = "\n"
+    )
+  )
+}
+
+build_s2_matchup <- function(
+  s2_safe_name,
+  image_date,
+  points_data,
+  asd_resampled_data,
+  excluded_stations = NULL,
+  facet_var = NULL
+) {
+  s2_safe_path <- if (dir.exists(s2_safe_name)) {
+    s2_safe_name
+  } else {
+    file.path("Data", "S2", s2_safe_name)
+  }
+
+  if (!dir.exists(s2_safe_path)) {
+    stop("Sentinel-2 SAFE directory not found: ", s2_safe_path)
+  }
+
+  image_date <- as.Date(image_date)
+  image_label <- format(image_date, "%Y-%m-%d")
+
+  s2_image <- MapRs::Read_S2(s2_safe_path)
+
+  s2_band_lookup <- tibble(
+    raster_band = names(s2_image),
+    band = str_replace(names(s2_image), "^B0", "B")
+  )
+
+  common_s2_bands <- usable_s2b_bands %>%
+    inner_join(s2_band_lookup, by = "band") %>%
+    arrange(band_center)
+
+  point_id_cols <- setdiff(names(points_data), c("lat", "lon"))
+  points_vect <- terra::vect(points_data, geom = c("lon", "lat"), crs = "EPSG:4326")
+  points_vect <- terra::project(points_vect, terra::crs(s2_image))
+
+  s2_extracted <- terra::extract(
+    s2_image[[common_s2_bands$raster_band]],
+    points_vect
+  ) %>%
+    as_tibble()
+
+  names(s2_extracted) <- c("ID", str_replace(names(s2_extracted)[-1], "^B0", "B"))
+
+  s2_spectra <- bind_cols(
+    points_data %>% select(all_of(point_id_cols)),
+    s2_extracted %>% select(-ID)
+  ) %>%
+    pivot_longer(
+      cols = -all_of(point_id_cols),
+      names_to = "band",
+      values_to = "s2_reflectance"
+    ) %>%
+    mutate(
+      s2_reflectance = (s2_reflectance - 1000) / 10000
+    ) %>%
+    inner_join(
+      common_s2_bands %>% select(band, band_center),
+      by = "band"
+    )
+
+  asd_matchup <- asd_resampled_data %>%
+    rename(asd_reflectance = reflectance)
+
+  join_keys <- intersect(names(asd_matchup), names(s2_spectra))
+  join_keys <- setdiff(join_keys, c("asd_reflectance", "s2_reflectance"))
+
+  matchup_data <- asd_matchup %>%
+    inner_join(s2_spectra, by = join_keys)
+
+  if (!is.null(excluded_stations)) {
+    matchup_data <- matchup_data %>%
+      filter(!station %in% excluded_stations)
+  }
+
+  matchup_data <- matchup_data %>%
+    filter(
+      !is.na(asd_reflectance),
+      !is.na(s2_reflectance)
+    ) %>%
+    mutate(
+      band = factor(band, levels = common_s2_bands$band),
+      image_date = image_date
+    )
+
+  if ("Zone" %in% names(matchup_data)) {
+    matchup_data <- matchup_data %>%
+      mutate(
+        tooltip = paste0(
+          as.character(station),
+          "<br>",
+          target,
+          "<br>Zone: ",
+          Zone,
+          "<br>",
+          band,
+          " (",
+          round(band_center, 1),
+          " nm)",
+          "<br>S2 image date: ",
+          image_label,
+          "<br>ASD: ",
+          signif(asd_reflectance, 4),
+          "<br>S2: ",
+          signif(s2_reflectance, 4)
+        )
+      )
+  } else {
+    matchup_data <- matchup_data %>%
+      mutate(
+        tooltip = paste0(
+          as.character(station),
+          "<br>",
+          target,
+          "<br>",
+          band,
+          " (",
+          round(band_center, 1),
+          " nm)",
+          "<br>S2 image date: ",
+          image_label,
+          "<br>ASD: ",
+          signif(asd_reflectance, 4),
+          "<br>S2: ",
+          signif(s2_reflectance, 4)
+        )
+      )
+  }
+
+  overall_metrics <- compute_matchup_metrics(matchup_data, image_label)
+
+  facet_stats <- NULL
+  if (!is.null(facet_var) && facet_var %in% names(matchup_data)) {
+    facet_stats <- matchup_data %>%
+      group_by(.data[[facet_var]]) %>%
+      group_modify(~ compute_matchup_metrics(.x, image_label)) %>%
+      ungroup()
+  }
+
+  list(
+    data = matchup_data,
+    r2 = overall_metrics$r2[[1]],
+    min_value = overall_metrics$panel_min[[1]],
+    max_value = overall_metrics$panel_max[[1]],
+    image_date = image_date,
+    image_label = image_label,
+    metrics = overall_metrics,
+    facet_var = facet_var,
+    facet_stats = facet_stats
+  )
+}
+
+build_acolite_matchup <- function(
+  acolite_dir,
+  image_date,
+  points_data,
+  asd_resampled_data,
+  excluded_stations = NULL
+) {
+  if (!dir.exists(acolite_dir)) {
+    stop("ACOLITE directory not found: ", acolite_dir)
+  }
+
+  image_date <- as.Date(image_date)
+  image_label <- format(image_date, "%Y-%m-%d")
+
+  acolite_files <- list.files(
+    acolite_dir,
+    pattern = "rhos_[0-9.]+\\.tif$",
+    full.names = TRUE,
+    ignore.case = TRUE
+  )
+
+  if (length(acolite_files) == 0) {
+    stop("No ACOLITE rhos TIFF files found in: ", acolite_dir)
+  }
+
+  acolite_band_lookup <- tibble(
+    raster_file = acolite_files,
+    wavelength = as.numeric(str_match(basename(acolite_files), "rhos_([0-9.]+)\\.tif$")[, 2])
+  ) %>%
+    filter(is.finite(wavelength)) %>%
+    rowwise() %>%
+    mutate(
+      nearest_band_index = which.min(abs(usable_s2b_bands$band_center - wavelength)),
+      band = usable_s2b_bands$band[[nearest_band_index]],
+      band_center = usable_s2b_bands$band_center[[nearest_band_index]],
+      band_delta = abs(band_center - wavelength)
+    ) %>%
+    ungroup() %>%
+    filter(band_delta <= 5) %>%
+    arrange(band_center) %>%
+    distinct(band, .keep_all = TRUE)
+
+  if (nrow(acolite_band_lookup) == 0) {
+    stop("No ACOLITE bands could be matched to Sentinel-2B bands in: ", acolite_dir)
+  }
+
+  acolite_image <- terra::rast(acolite_band_lookup$raster_file)
+  names(acolite_image) <- acolite_band_lookup$band
+
+  point_id_cols <- setdiff(names(points_data), c("lat", "lon"))
+  points_vect <- terra::vect(points_data, geom = c("lon", "lat"), crs = "EPSG:4326")
+  points_vect <- terra::project(points_vect, terra::crs(acolite_image))
+
+  acolite_extracted <- terra::extract(acolite_image, points_vect) %>%
+    as_tibble()
+
+  names(acolite_extracted) <- c("ID", acolite_band_lookup$band)
+
+  acolite_spectra <- bind_cols(
+    points_data %>% select(all_of(point_id_cols)),
+    acolite_extracted %>% select(-ID)
+  ) %>%
+    pivot_longer(
+      cols = all_of(acolite_band_lookup$band),
+      names_to = "band",
+      values_to = "s2_reflectance"
+    ) %>%
+    inner_join(
+      acolite_band_lookup %>% select(band, band_center),
+      by = "band"
+    )
+
+  asd_matchup <- asd_resampled_data %>%
+    rename(asd_reflectance = reflectance)
+
+  join_keys <- intersect(names(asd_matchup), names(acolite_spectra))
+  join_keys <- setdiff(join_keys, c("asd_reflectance", "s2_reflectance"))
+
+  matchup_data <- asd_matchup %>%
+    inner_join(acolite_spectra, by = join_keys)
+
+  if (!is.null(excluded_stations)) {
+    matchup_data <- matchup_data %>%
+      filter(!station %in% excluded_stations)
+  }
+
+  matchup_data <- matchup_data %>%
+    filter(
+      !is.na(asd_reflectance),
+      !is.na(s2_reflectance)
+    ) %>%
+    mutate(
+      band = factor(band, levels = acolite_band_lookup$band),
+      image_date = image_date,
+      tooltip = paste0(
+        as.character(station),
+        "<br>",
+        target,
+        "<br>",
+        band,
+        " (",
+        round(band_center, 1),
+        " nm)",
+        "<br>S2 image date: ",
+        image_label,
+        "<br>ASD: ",
+        signif(asd_reflectance, 4),
+        "<br>ACOLITE: ",
+        signif(s2_reflectance, 4)
+      )
+    )
+
+  overall_metrics <- compute_matchup_metrics(matchup_data, image_label)
+
+  list(
+    data = matchup_data,
+    r2 = overall_metrics$r2[[1]],
+    min_value = overall_metrics$panel_min[[1]],
+    max_value = overall_metrics$panel_max[[1]],
+    image_date = image_date,
+    image_label = image_label,
+    metrics = overall_metrics,
+    facet_var = NULL,
+    facet_stats = NULL
+  )
+}
+
+combine_correction_matchups <- function(sen2cor_matchup, acolite_matchup) {
+  combined_data <- bind_rows(
+    sen2cor_matchup$data %>% mutate(correction = "Sen2Cor"),
+    acolite_matchup$data %>% mutate(correction = "ACOLITE")
+  ) %>%
+    mutate(
+      correction = factor(correction, levels = c("Sen2Cor", "ACOLITE")),
+      tooltip = paste0(
+        as.character(station),
+        "<br>",
+        target,
+        "<br>Correction: ",
+        correction,
+        "<br>",
+        band,
+        " (",
+        round(band_center, 1),
+        " nm)",
+        "<br>S2 image date: ",
+        sen2cor_matchup$image_label,
+        "<br>ASD: ",
+        signif(asd_reflectance, 4),
+        "<br>Satellite: ",
+        signif(s2_reflectance, 4)
+      )
+    )
+
+  panel_min <- min(c(0, combined_data$asd_reflectance, combined_data$s2_reflectance), na.rm = TRUE)
+  panel_max <- max(c(combined_data$asd_reflectance, combined_data$s2_reflectance), na.rm = TRUE)
+  panel_span <- panel_max - panel_min
+
+  correction_metrics <- combined_data %>%
+    group_by(correction) %>%
+    group_modify(~ compute_matchup_metrics(.x, sen2cor_matchup$image_label)) %>%
+    ungroup() %>%
+    mutate(
+      x = panel_min + 0.02 * panel_span,
+      y = panel_max - 0.02 * panel_span,
+      label = str_replace(label, "^S2 image: [^\\n]+\\n", "")
+    )
+
+  list(
+    data = combined_data,
+    image_date = sen2cor_matchup$image_date,
+    image_label = sen2cor_matchup$image_label,
+    min_value = panel_min,
+    max_value = panel_max,
+    correction_metrics = correction_metrics
+  )
+}
+
+summarise_correction_metrics <- function(comparison_object) {
+  comparison_object$correction_metrics %>%
+    mutate(
+      summary = paste0(
+        correction,
+        ": R² = ",
+        vapply(r2, format_matchup_metric, character(1)),
+        ", RMSD = ",
+        vapply(rmsd, format_matchup_metric, character(1))
+      )
+    ) %>%
+    pull(summary) %>%
+    paste(collapse = "; ")
+}
+
+make_matchup_widget <- function(matchup_object) {
+  build_matchup_plot <- function(plot_data) {
+    ggplot(
+      plot_data,
+      aes(
+        x = asd_reflectance,
+        y = s2_reflectance,
+        color = target,
+        shape = band
+      )
+    ) +
+      geom_abline(
+        slope = 1,
+        intercept = 0,
+        linetype = "dashed",
+        color = "grey45"
+      ) +
+      geom_smooth(
+        aes(
+          x = asd_reflectance,
+          y = s2_reflectance,
+          group = 1
+        ),
+        inherit.aes = FALSE,
+        method = "lm",
+        se = FALSE,
+        linewidth = 0.8,
+        color = "black"
+      ) +
+      geom_point_interactive(
+        aes(
+          tooltip = tooltip,
+          data_id = paste(station, band, sep = "_")
+        ),
+        size = 2.8,
+        alpha = 0.9
+      ) +
+      scale_color_manual(values = target_colors, drop = FALSE) +
+      scale_shape_manual(
+        values = c(16, 17, 15, 3, 7, 8, 18, 4, 1),
+        drop = FALSE
+      ) +
+      labs(
+        x = "ASD reflectance",
+        y = "Sentinel-2 reflectance",
+        color = "Target",
+        shape = "Band"
+      ) +
+      theme_minimal(base_size = 12) +
+      theme(
+        legend.position = "right",
+        panel.grid.minor = element_blank()
+      )
+  }
+
+  if (is.null(matchup_object$facet_var)) {
+    ggobj <- build_matchup_plot(matchup_object$data) +
+      coord_equal(
+        xlim = c(matchup_object$min_value, matchup_object$max_value),
+        ylim = c(matchup_object$min_value, matchup_object$max_value),
+        expand = TRUE
+      ) +
+      labs(
+        subtitle = paste("Sentinel-2 image date:", matchup_object$image_label)
+      ) +
+      annotate(
+        "label",
+        x = matchup_object$metrics$x[[1]],
+        y = matchup_object$metrics$y[[1]],
+        label = matchup_object$metrics$label[[1]],
+        hjust = 0,
+        vjust = 1,
+        label.size = 0.2,
+        size = 3,
+        lineheight = 0.95
+      )
+
+    width_svg <- 7
+    height_svg <- 6
+  } else {
+    facet_name <- matchup_object$facet_var
+    facet_values <- matchup_object$facet_stats[[facet_name]]
+
+    zone_plots <- lapply(facet_values, function(facet_value) {
+      plot_metrics <- matchup_object$facet_stats %>%
+        filter(.data[[facet_name]] == facet_value) %>%
+        slice(1)
+
+      plot_data <- matchup_object$data %>%
+        filter(.data[[facet_name]] == facet_value)
+
+      build_matchup_plot(plot_data) +
+        coord_equal(
+          xlim = c(plot_metrics$panel_min[[1]], plot_metrics$panel_max[[1]]),
+          ylim = c(plot_metrics$panel_min[[1]], plot_metrics$panel_max[[1]]),
+          expand = TRUE
+        ) +
+        labs(
+          title = as.character(facet_value),
+          subtitle = paste("Sentinel-2 image date:", matchup_object$image_label)
+        ) +
+        annotate(
+          "label",
+          x = plot_metrics$x[[1]],
+          y = plot_metrics$y[[1]],
+          label = plot_metrics$label[[1]],
+          hjust = 0,
+          vjust = 1,
+          label.size = 0.2,
+          size = 2.8,
+          lineheight = 0.92
+        )
+    })
+
+    ggobj <- patchwork::wrap_plots(
+      plotlist = zone_plots,
+      ncol = 2,
+      guides = "collect"
+    )
+
+    width_svg <- 11
+    height_svg <- 9
+  }
+
+  girafe(
+    ggobj = ggobj,
+    width_svg = width_svg,
+    height_svg = height_svg
+  ) %>%
+    girafe_options(
+      opts_hover(css = "stroke:black;stroke-width:1.5px;"),
+      opts_hover_inv(css = "opacity:0.2;"),
+      opts_toolbar(saveaspng = TRUE)
+    )
+}
+
+make_correction_comparison_widget <- function(comparison_object) {
+  correction_plot <- ggplot(
+    comparison_object$data,
+    aes(
+      x = asd_reflectance,
+      y = s2_reflectance,
+      color = target,
+      shape = band
+    )
+  ) +
+    geom_abline(
+      slope = 1,
+      intercept = 0,
+      linetype = "dashed",
+      color = "grey45"
+    ) +
+    geom_smooth(
+      aes(group = 1),
+      method = "lm",
+      se = FALSE,
+      linewidth = 0.8,
+      color = "black"
+    ) +
+    geom_point_interactive(
+      aes(
+        tooltip = tooltip,
+        data_id = paste(correction, station, band, sep = "_")
+      ),
+      size = 2.8,
+      alpha = 0.9
+    ) +
+    geom_label(
+      data = comparison_object$correction_metrics,
+      aes(
+        x = x,
+        y = y,
+        label = label
+      ),
+      inherit.aes = FALSE,
+      hjust = 0,
+      vjust = 1,
+      label.size = 0.2,
+      size = 2.8,
+      lineheight = 0.92
+    ) +
+    facet_wrap(~correction, ncol = 2) +
+    scale_color_manual(values = target_colors, drop = FALSE) +
+    scale_shape_manual(
+      values = c(16, 17, 15, 3, 7, 8, 18, 4, 1, 2, 5, 6, 9, 10, 11),
+      drop = FALSE
+    ) +
+    coord_equal(
+      xlim = c(comparison_object$min_value, comparison_object$max_value),
+      ylim = c(comparison_object$min_value, comparison_object$max_value),
+      expand = TRUE
+    ) +
+    labs(
+      x = "ASD reflectance",
+      y = "Satellite-derived reflectance",
+      color = "Target",
+      shape = "Band",
+      subtitle = paste("Sentinel-2 image date:", comparison_object$image_label)
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      legend.position = "right",
+      panel.grid.minor = element_blank()
+    )
+
+  girafe(
+    ggobj = correction_plot,
+    width_svg = 11,
+    height_svg = 6
+  ) %>%
+    girafe_options(
+      opts_hover(css = "stroke:black;stroke-width:1.5px;"),
+      opts_hover_inv(css = "opacity:0.2;"),
+      opts_toolbar(saveaspng = TRUE)
+    )
+}
+
+build_ac06_vs_ac0102_matchup <- function(matchup_object) {
+  comparison_data <- matchup_object$data %>%
+    filter(as.character(station) %in% c("AC01", "AC02", "AC06")) %>%
+    mutate(
+      source_station = as.character(station),
+      comparison = ifelse(
+        source_station %in% c("AC01", "AC02"),
+        "mean(AC01, AC02)",
+        "AC06"
+      )
+    ) %>%
+    group_by(comparison, band, band_center, image_date) %>%
+    summarise(
+      source_stations = paste(sort(unique(source_station)), collapse = ", "),
+      asd_reflectance = mean(asd_reflectance, na.rm = TRUE),
+      s2_reflectance = mean(s2_reflectance, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    mutate(
+      station = comparison,
+      target = "Sand",
+      tooltip = paste0(
+        comparison,
+        "<br>Source station(s): ",
+        source_stations,
+        "<br>",
+        band,
+        " (",
+        round(band_center, 1),
+        " nm)",
+        "<br>S2 image date: ",
+        matchup_object$image_label,
+        "<br>ASD: ",
+        signif(asd_reflectance, 4),
+        "<br>S2: ",
+        signif(s2_reflectance, 4)
+      )
+    ) %>%
+    arrange(comparison, band)
+
+  comparison_metrics <- compute_matchup_metrics(comparison_data, matchup_object$image_label)
+
+  list(
+    data = comparison_data,
+    r2 = comparison_metrics$r2[[1]],
+    min_value = comparison_metrics$panel_min[[1]],
+    max_value = comparison_metrics$panel_max[[1]],
+    image_date = matchup_object$image_date,
+    image_label = matchup_object$image_label,
+    metrics = comparison_metrics,
+    facet_var = NULL,
+    facet_stats = NULL
+  )
+}
+
+make_ac_sand_comparison_widget <- function(matchup_object) {
+  comparison_colors <- c(
+    "AC06" = "#0072B2",
+    "mean(AC01, AC02)" = "#D55E00"
+  )
+
+  comparison_plot <- ggplot(
+    matchup_object$data,
+    aes(
+      x = asd_reflectance,
+      y = s2_reflectance,
+      color = comparison,
+      shape = band
+    )
+  ) +
+    geom_abline(
+      slope = 1,
+      intercept = 0,
+      linetype = "dashed",
+      color = "grey45"
+    ) +
+    geom_smooth(
+      aes(
+        x = asd_reflectance,
+        y = s2_reflectance,
+        group = 1
+      ),
+      inherit.aes = FALSE,
+      method = "lm",
+      se = FALSE,
+      linewidth = 0.8,
+      color = "black"
+    ) +
+    geom_point_interactive(
+      aes(
+        tooltip = tooltip,
+        data_id = paste(comparison, band, sep = "_")
+      ),
+      size = 2.8,
+      alpha = 0.9
+    ) +
+    scale_color_manual(values = comparison_colors, drop = FALSE) +
+    scale_shape_manual(
+      values = c(16, 17, 15, 3, 7, 8, 18, 4, 1),
+      drop = FALSE
+    ) +
+    coord_equal(
+      xlim = c(matchup_object$min_value, matchup_object$max_value),
+      ylim = c(matchup_object$min_value, matchup_object$max_value),
+      expand = TRUE
+    ) +
+    labs(
+      x = "ASD reflectance",
+      y = "Sentinel-2 reflectance",
+      color = "Reference",
+      shape = "Band",
+      subtitle = paste("Sentinel-2 image date:", matchup_object$image_label)
+    ) +
+    annotate(
+      "label",
+      x = matchup_object$metrics$x[[1]],
+      y = matchup_object$metrics$y[[1]],
+      label = matchup_object$metrics$label[[1]],
+      hjust = 0,
+      vjust = 1,
+      label.size = 0.2,
+      size = 3,
+      lineheight = 0.95
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      legend.position = "right",
+      panel.grid.minor = element_blank()
+    )
+
+  girafe(
+    ggobj = comparison_plot,
+    width_svg = 7,
+    height_svg = 6
+  ) %>%
+    girafe_options(
+      opts_hover(css = "stroke:black;stroke-width:1.5px;"),
+      opts_hover_inv(css = "opacity:0.2;"),
+      opts_toolbar(saveaspng = TRUE)
+    )
+}
+
+matchup_20260327 <- build_s2_matchup(
+  "S2B_MSIL2A_20260327T113319_N0512_R080_T28QCH_20260327T152639.SAFE",
+  "2026-03-27",
+  points_data = ac_points,
+  asd_resampled_data = ac_spectra_resampled_s2b,
+  excluded_stations = "AC03"
+)
+
+matchup_20260327_acolite <- build_acolite_matchup(
+  "Data/S2/ACOLITE/20260327",
+  "2026-03-27",
+  points_data = ac_points,
+  asd_resampled_data = ac_spectra_resampled_s2b,
+  excluded_stations = "AC03"
+)
+
+matchup_20260327_corrections <- combine_correction_matchups(
+  matchup_20260327,
+  matchup_20260327_acolite
+)
+
+matchup_20260327_zone <- build_ac06_vs_ac0102_matchup(matchup_20260327)
+
+matchup_20260307_ac_sand <- build_s2_matchup(
+  "S2B_MSIL2A_20260307T113319_N0512_R080_T28QCH_20260307T154921.SAFE",
+  "2026-03-07",
+  points_data = ac_points,
+  asd_resampled_data = ac_spectra_resampled_s2b,
+  excluded_stations = "AC03"
+)
+
+matchup_20260307_acolite <- build_acolite_matchup(
+  "Data/S2/ACOLITE/20260307",
+  "2026-03-07",
+  points_data = ac_points,
+  asd_resampled_data = ac_spectra_resampled_s2b,
+  excluded_stations = "AC03"
+)
+
+matchup_20260307_corrections <- combine_correction_matchups(
+  matchup_20260307_ac_sand,
+  matchup_20260307_acolite
+)
+
+matchup_20260307_ac_sand_comparison <- build_ac06_vs_ac0102_matchup(matchup_20260307_ac_sand)
+
+matchup_20260307 <- build_s2_matchup(
+  "S2B_MSIL2A_20260307T113319_N0512_R080_T28QCH_20260307T154921.SAFE",
+  "2026-03-07",
+  points_data = stable_reference_points,
+  asd_resampled_data = stable_spectra_resampled_s2b,
+  facet_var = "Zone"
+)
+```
+
+```{r}
+#| fig-cap: Match-up between ASD reflectance resampled to Sentinel-2B bands and Sentinel-2 image reflectance extracted at the field locations for the image acquired on 2026-03-27. Sen2Cor and ACOLITE atmospheric corrections are compared side by side.
+#| label: fig-S2_matchup
+#| echo: false
+#| error: false
+#| message: false
+#| eval: true
+#| warning: false
+#| out-width: "95%"
+
+make_correction_comparison_widget(matchup_20260327_corrections)
+```
+
+@fig-S2_matchup_20260307_ac presents the comparison between ASD field measurements acquired on 27 March and satellite-derived reflectance from an image acquired 20 days earlier (7 March). While the temporal mismatch likely contributes to the observed differences, the comparison between atmospheric correction methods remains informative.
+
+Sen2Cor exhibits lower dispersion relative to ASD measurements, with a higher coefficient of determination (R² = 0.845) compared to ACOLITE (R² = 0.795). However, ACOLITE shows a closer alignment with the 1:1 relationship and consistently lower error metrics (RMSD, bias, MAD, RPD, and APD).
+
+Overall, despite the lower R², ACOLITE provides more accurate and consistent reflectance estimates, making it a more suitable choice for long-term time series analyses of the Banc d’Arguin based on satellite-derived data.
+
+```{r}
+#| fig-cap: Match-up between ASD reflectance resampled to Sentinel-2B bands and Sentinel-2 image reflectance extracted at the field locations for the image acquired on 2026-03-07. Sen2Cor and ACOLITE atmospheric corrections are compared side by side.
+#| label: fig-S2_matchup_20260307_ac
+#| echo: false
+#| error: false
+#| message: false
+#| eval: true
+#| warning: false
+#| out-width: "95%"
+
+make_correction_comparison_widget(matchup_20260307_corrections)
+```
+
+## Times series analysis of the reflectance divergeance. 
+
+The reflectance of selected targets, assumed to remain stable over time, will be monitored and compared to the reflectance values acquired on 27 March 2026.
+
+```{r time series of atmospheric correction}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: Mean Sentinel-2 reflectance spectra extracted over the Iwik and Arel AOIs for each available image date. In each panel, the 2026-03-27 reference spectrum is shown in grey and the spectrum of the panel date in goldenrod, with ribbons indicating ±1 standard deviation across AOI pixels. Line type distinguishes the atmospheric correction.
+#| fig-width: 18
+#| fig-height: 12
+#| out-width: "100%"
+
+library(tidyverse)
+
+reference_date <- as_date("2026-03-27")
+locations_to_plot <- c("Iwik", "Arel")
+
+band_lookup <- usable_s2b_bands %>%
+  select(band, band_center) %>%
+  distinct() %>%
+  filter(band != "B09") %>%
+  arrange(band_center) %>% 
+  mutate(band = case_when(band == "B1" ~ "B01",
+                          band == "B2" ~ "B02",
+                          band == "B3" ~ "B03",
+                          band == "B4" ~ "B04",
+                          band == "B5" ~ "B05",
+                          band == "B6" ~ "B06",
+                          band == "B7" ~ "B07",
+                          band == "B8" ~ "B08",
+                          band == "B8A" ~ "B8A"))
+
+csv_files <- list.files(
+  "Data/Atm_Compare_AOI",
+  pattern = "\\.csv$",
+  recursive = TRUE,
+  full.names = TRUE
+) %>%
+  tibble(path = .) %>%
+  mutate(
+    cor = case_when(
+      str_detect(path, "ACOLITE") ~ "ACOLITE",
+      TRUE ~ "Sen2Cor"
+    ),
+    date = basename(path) %>%
+      str_remove("\\.csv$") %>%
+      as_date()
+  )
+
+common_dates <- csv_files %>%
+  distinct(date, cor) %>%
+  count(date, name = "n_cor") %>%
+  filter(n_cor == 2) %>%
+  pull(date) %>%
+  sort()
+
+spectra_summary <- csv_files %>%
+  filter(date %in% common_dates) %>%
+  select(path, cor, date) %>%
+  pmap_dfr(function(path, cor, date) {
+    readr::read_csv(path, show_col_types = FALSE) %>%
+      mutate(
+        cor = .env$cor,
+        file_date = .env$date
+      )
+  }) %>%
+  filter(
+    AOI %in% locations_to_plot,
+    file_date == as_date(date)
+  ) %>%
+  select(file_date, AOI, cor, any_of(band_lookup$band)) %>%
+  pivot_longer(
+    cols = any_of(band_lookup$band),
+    names_to = "band",
+    values_to = "reflectance"
+  ) %>%
+  left_join(band_lookup, by = "band") %>%
+  group_by(file_date, AOI, cor, band, band_center) %>%
+  summarise(
+    mean_reflectance = mean(reflectance, na.rm = TRUE),
+    sd_reflectance = coalesce(sd(reflectance, na.rm = TRUE), 0),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    cor = factor(cor, levels = c("Sen2Cor", "ACOLITE")),
+    AOI = factor(AOI, levels = locations_to_plot)
+  )
+
+reference_spectra <- spectra_summary %>%
+  filter(file_date == reference_date) %>%
+  select(AOI, cor, band, band_center, mean_reflectance, sd_reflectance)
+
+panel_dates <- spectra_summary %>%
+  distinct(file_date)
+
+facet_levels <- tidyr::crossing(
+  date = common_dates,
+  AOI = factor(locations_to_plot, levels = locations_to_plot)
+) %>%
+  mutate(facet_label = paste(format(date, "%Y-%m-%d"), AOI, sep = "\n")) %>%
+  pull(facet_label)
+
+plot_data <- bind_rows(
+  reference_spectra %>%
+    crossing(panel_dates) %>%
+    transmute(
+      date = file_date,
+      AOI,
+      cor,
+      band,
+      band_center,
+      mean_reflectance,
+      sd_reflectance,
+      period = "2026-03-27"
+    ),
+  spectra_summary %>%
+    transmute(
+      date = file_date,
+      AOI,
+      cor,
+      band,
+      band_center,
+      mean_reflectance,
+      sd_reflectance,
+      period = "Current date"
+    )
+) %>%
+  mutate(
+    period = factor(period, levels = c("2026-03-27", "Current date")),
+    facet_label = paste(format(date, "%Y-%m-%d"), AOI, sep = "\n"),
+    facet_label = factor(facet_label, levels = facet_levels)
+  )
+
+comparison_colors <- c(
+  "2026-03-27" = "grey55",
+  "Current date" = "goldenrod3"
+)
+plot_data %>% 
+  dplyr::filter(cor == "Sen2Cor") %>%
+ggplot(
+  aes(
+    x = band_center,
+    y = mean_reflectance,
+    color = period,
+    fill = period,
+    linetype = cor,
+    group = interaction(period, cor)
+  )
+) +
+  geom_ribbon(
+    aes(
+      ymin = pmax(mean_reflectance - sd_reflectance, 0),
+      ymax = mean_reflectance + sd_reflectance
+    ),
+    alpha = 0.14,
+    color = NA
+  ) +
+  geom_line(linewidth = 0.6, na.rm = TRUE) +
+  geom_point(size = 0.8, na.rm = TRUE) +
+  facet_wrap(~facet_label, ncol = 6) +
+  scale_color_manual(values = comparison_colors, drop = FALSE) +
+  scale_fill_manual(values = comparison_colors, drop = FALSE) +
+  scale_linetype_manual(
+    values = c("Sen2Cor" = "solid", "ACOLITE" = "longdash"),
+    drop = FALSE
+  ) +
+  scale_x_continuous(
+    breaks = band_lookup$band_center,
+    labels = round(band_lookup$band_center)
+  ) +
+  labs(
+    x = "Wavelength (nm)",
+    y = "Reflectance",
+    color = NULL,
+    fill = NULL,
+    linetype = "Atmospheric correction"
+  ) +
+  guides(fill = "none") +
+  theme_minimal(base_size = 10) +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 6),
+    strip.text = element_text(size = 8)
+  )
+
+```
+
+To complement the spectral overlays, the figure below summarizes the band-wise distance between the mean spectrum observed on 27 March 2026 and the mean spectrum of each image date, computed separately for each AOI and atmospheric correction.
+
+```{r}
+#| echo: false
+#| label: fig-spectral_distance_metrics
+#| message: false
+#| warning: false
+#| fig-cap: Spectral distance between the 2026-03-27 reference spectrum and the mean spectrum of each image date for the Iwik and Arel AOIs. Metrics are computed band by band for each atmospheric correction; dashed horizontal lines indicate the ideal value for each metric.
+#| fig-width: 16
+#| fig-height: 14
+#| out-width: "100%"
+
+safe_spectral_r2 <- function(reference, current) {
+  valid <- is.finite(reference) & is.finite(current)
+  reference <- reference[valid]
+  current <- current[valid]
+
+  if (length(reference) < 2 || length(unique(reference)) < 2 || length(unique(current)) < 2) {
+    return(NA_real_)
+  }
+
+  stats::cor(reference, current)^2
+}
+
+spectral_distance_metrics <- spectra_summary %>%
+  rename(date = file_date) %>%
+  inner_join(
+    reference_spectra %>%
+      transmute(
+        AOI,
+        cor,
+        band,
+        reference_reflectance = mean_reflectance
+      ),
+    by = c("AOI", "cor", "band")
+  ) %>%
+  group_by(date, AOI, cor) %>%
+  summarise(
+    r2 = safe_spectral_r2(reference_reflectance, mean_reflectance),
+    bias = mean(mean_reflectance - reference_reflectance, na.rm = TRUE),
+    rmsd = sqrt(mean((mean_reflectance - reference_reflectance)^2, na.rm = TRUE)),
+    mad = mean(abs(mean_reflectance - reference_reflectance), na.rm = TRUE),
+    rpd = mean(
+      if_else(
+        !is.na(reference_reflectance) & reference_reflectance != 0,
+        (mean_reflectance - reference_reflectance) / reference_reflectance,
+        NA_real_
+      ),
+      na.rm = TRUE
+    ) * 100,
+    apd = mean(
+      if_else(
+        !is.na(reference_reflectance) & reference_reflectance != 0,
+        abs(mean_reflectance - reference_reflectance) / abs(reference_reflectance),
+        NA_real_
+      ),
+      na.rm = TRUE
+    ) * 100,
+    .groups = "drop"
+  ) %>%
+  pivot_longer(
+    cols = c(r2, bias, rmsd, mad, rpd, apd),
+    names_to = "metric",
+    values_to = "value"
+  ) %>%
+  mutate(
+    AOI = factor(AOI, levels = locations_to_plot),
+    cor = factor(cor, levels = c("Sen2Cor", "ACOLITE")),
+    metric = factor(
+      metric,
+      levels = c("r2", "bias", "rmsd", "mad", "rpd", "apd"),
+      labels = c("R²", "Bias", "RMSD", "MAD", "RPD (%)", "APD (%)")
+    )
+  )
+
+ideal_metric_values <- tibble(
+  metric = factor(
+    c("R²", "Bias", "RMSD", "MAD", "RPD (%)", "APD (%)"),
+    levels = levels(spectral_distance_metrics$metric)
+  ),
+  value = c(1, 0, 0, 0, 0, 0)
+)
+
+correction_colors <- c(
+  "Sen2Cor" = "#1b9e77",
+  "ACOLITE" = "#d95f02"
+)
+
+ggplot(
+  spectral_distance_metrics,
+  aes(
+    x = date,
+    y = value,
+    color = cor,
+    group = cor
+  )
+) +
+  geom_hline(
+    data = ideal_metric_values,
+    aes(yintercept = value),
+    inherit.aes = FALSE,
+    color = "grey70",
+    linetype = "dashed",
+    linewidth = 0.4
+  ) +
+  geom_line(linewidth = 0.5, na.rm = TRUE) +
+  geom_point(size = 1.5, na.rm = TRUE) +
+  facet_grid(metric ~ AOI, scales = "free_y") +
+  scale_color_manual(values = correction_colors, drop = FALSE) +
+  scale_x_date(date_labels = "%Y-%m", date_breaks = "3 months") +
+  labs(
+    x = "Image date",
+    y = NULL,
+    color = "Atmospheric correction"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(size = 9)
+  )
+
+```
+
+The figure below condenses the six spectral-distance metrics into a single normalized score. For each metric, the score expresses the proximity to the ideal value (`R² = 1`; all other metrics = `0`), then averages these component scores across metrics and across the two AOIs.
+
+```{r}
+#| echo: false
+#| label: fig-overall_atm_score
+#| message: false
+#| warning: false
+#| fig-cap: Overall atmospheric-correction score for each image date. The score is computed from the normalized proximity to the ideal values of R², bias, RMSD, MAD, RPD, and APD, then averaged across Iwik and Arel.
+#| fig-width: 12
+#| fig-height: 6
+#| out-width: "90%"
+
+overall_score <- spectral_distance_metrics %>%
+  mutate(
+    metric_distance = case_when(
+      as.character(metric) == "R²" ~ abs(1 - value),
+      TRUE ~ abs(value)
+    )
+  ) %>%
+  group_by(metric) %>%
+  mutate(
+    max_metric_distance = max(metric_distance, na.rm = TRUE),
+    component_score = if_else(
+      is.finite(max_metric_distance) & max_metric_distance > 0,
+      1 - metric_distance / max_metric_distance,
+      1
+    )
+  ) %>%
+  ungroup() %>%
+  group_by(date, cor) %>%
+  summarise(
+    score = mean(component_score, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  rename(atm_cor = cor) %>%
+  mutate(
+    tooltip = paste0(
+      "Date: ", format(date, "%Y-%m-%d"),
+      "<br>Correction: ", atm_cor,
+      "<br>Score: ", format(round(score, 3), nsmall = 3, trim = TRUE)
+    ),
+    data_id = paste(atm_cor, format(date, "%Y-%m-%d"), sep = "_")
+  )
+
+overall_score_plot <- ggplot(
+  overall_score,
+  aes(
+    x = date,
+    y = score,
+    color = atm_cor,
+    group = atm_cor
+  )
+) +
+  geom_line_interactive(
+    aes(
+      data_id = atm_cor
+    ),
+    linewidth = 0.7,
+    na.rm = TRUE
+  ) +
+  geom_point_interactive(
+    aes(
+      tooltip = tooltip,
+      data_id = data_id
+    ),
+    size = 2.2,
+    na.rm = TRUE
+  ) +
+  scale_color_manual(values = correction_colors, drop = FALSE) +
+  scale_x_date(date_labels = "%Y-%m", date_breaks = "3 months") +
+  scale_y_continuous(limits = c(0, 1.02)) +
+  labs(
+    x = "Image date",
+    y = "Overall score",
+    color = "Atmospheric correction"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+girafe(
+  ggobj = overall_score_plot,
+  width_svg = 10,
+  height_svg = 5
+) %>%
+  girafe_options(
+    opts_hover(css = "stroke:black;stroke-width:1.5px;"),
+    opts_hover_inv(css = "opacity:0.25;"),
+    opts_toolbar(saveaspng = TRUE)
+  )
+
+```
+
+
