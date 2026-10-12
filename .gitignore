@@ -1,0 +1,23 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Large raw and derived Sentinel-2 products (SAFE, ZIP, NetCDF, GeoTIFF, JP2)
+/Data/S2/
+
+# Quarto-generated working files
+/.quarto/
+**/*.quarto_ipynb
+
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editor and operating-system metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

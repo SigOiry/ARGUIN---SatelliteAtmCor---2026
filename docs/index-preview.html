@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="generator" content="quarto-1.10.18">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+    <meta name="author" content="Simon Oiry">
+    <meta name="author" content="Pierre Gernez">
+    <meta name="author" content="Laurent Barillé">
+    <meta name="author" content="El-Hacen Mohamed El-Hacen">
+    <meta name="author" content="Jim de Fouw">
+    <meta name="dcterms.date" content="2026-10-12">
+    <meta name="keywords" content="To be Written">
+
+    <title>Spatio-Temporal dynamics of the intertidal seagrass meadow of Banc d’Arguin, Mauritania, in a context of high atmospheric complexity.</title>
+    <style>
+      /* Default styles provided by pandoc.
+      ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+      */
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: 1.5em;}
+      div.column{flex: auto;}
+      @media screen {
+      div.columns{gap: min(4vw, 1.5em);}
+      div.column{overflow-x: auto;}
+      }
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      ul.task-list{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+        vertical-align: middle;
+      }
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      /* CSS for citations */
+      div.csl-bib-body { }
+      div.csl-entry {
+        clear: both;
+        margin-bottom: 0em;
+      }
+      .hanging-indent div.csl-entry {
+        margin-left:2em;
+        text-indent:-2em;
+      }
+      div.csl-left-margin {
+        min-width:2em;
+        float:left;
+      }
+      div.csl-right-inline {
+        margin-left:2em;
+        padding-left:1em;
+      }
+      div.csl-indent {
+        margin-left: 2em;
+      }    </style>
+
+    <style>
+      body.hypothesis-enabled #quarto-embed-header {
+        padding-right: 36px;
+      }
+
+      #quarto-embed-header {
+        height: 3em;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: solid 1px;
+      }
+
+      #quarto-embed-header h6 {
+        font-size: 1.1em;
+        padding-top: 0.6em;
+        margin-left: 1em;
+        margin-right: 1em;
+        font-weight: 400;
+      }
+
+      #quarto-embed-header a.quarto-back-link,
+      #quarto-embed-header a.quarto-download-embed {
+        font-size: 0.8em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        margin-left: 1em;
+        margin-right: 1em;
+      }
+
+      .quarto-back-container {
+        padding-left: 0.5em;
+        display: flex;
+      }
+
+      .headroom {
+          will-change: transform;
+          transition: transform 200ms linear;
+      }
+
+      .headroom--pinned {
+          transform: translateY(0%);
+      }
+
+      .headroom--unpinned {
+          transform: translateY(-100%);
+      }      
+    </style>
+
+    <script>
+    window.document.addEventListener("DOMContentLoaded", function () {
+
+      var header = window.document.querySelector("#quarto-embed-header");
+      const titleBannerEl = window.document.querySelector("body > #title-block-header");
+      if (titleBannerEl) {
+        titleBannerEl.style.paddingTop = header.clientHeight + "px";
+      }
+      const contentEl = window.document.getElementById('quarto-content');
+      for (const child of contentEl.children) {
+        child.style.paddingTop = header.clientHeight + "px";
+        child.style.marginTop = "1em";
+      }
+
+      // Use the article root if the `back` call doesn't work. This isn't perfect
+      // but should typically work
+      window.quartoBackToArticle = () => {
+        var currentUrl = window.location.href;
+        window.history.back();
+        setTimeout(() => {
+            // if location was not changed in 100 ms, then there is no history back
+            if(currentUrl === window.location.href){              
+                // redirect to site root
+                window.location.href = "index.html";
+            }
+        }, 100);
+      }
+
+      const headroom = new window.Headroom(header, {
+        tolerance: 5,
+        onPin: function () {
+        },
+        onUnpin: function () {
+        },
+      });
+      headroom.init();
+    });
+    </script>
+
+    
+<script src="site_libs/manuscript-notebook/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-62e2d20df198e8a01bb734742f2e28cf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+     
+      <meta name="citation_title" content="Spatio-Temporal dynamics of the intertidal seagrass meadow of Banc d&amp;amp;#039;Arguin, Mauritania, in a context of high atmospheric complexity.">
+<meta name="citation_abstract" content="To be Written">
+<meta name="citation_keywords" content="To be Written">
+<meta name="citation_author" content="Simon Oiry">
+<meta name="citation_author" content="Pierre Gernez">
+<meta name="citation_author" content="Laurent Barillé">
+<meta name="citation_author" content="El-Hacen Mohamed El-Hacen">
+<meta name="citation_author" content="Jim de Fouw">
+<meta name="citation_publication_date" content="2026-10-12">
+<meta name="citation_cover_date" content="2026-10-12">
+<meta name="citation_year" content="2026">
+<meta name="citation_online_date" content="2026-10-12">
+<meta name="citation_language" content="en">
+<meta name="citation_journal_title" content="Remote Sensing of Environment">
+<meta name="citation_reference" content="citation_title=What can be learned from fishers’ perceptions for fishery management planning? Case study insights from sainte-marie, madagascar;,citation_author=Thaı̈s A Bernos;,citation_author=Clodio Travouck;,citation_author=Naly Ramasinoro;,citation_author=Dylan J Fraser;,citation_author=Barbara Mathevon;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_issue=11;,citation_volume=16;,citation_journal_title=Plos one;,citation_publisher=Public Library of Science San Francisco, CA USA;">
+<meta name="citation_reference" content="citation_title=The state of world fisheries and aquaculture 2024: Blue transformation in action;,citation_author=FAO;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_fulltext_html_url=https://doi.org/10.4060/cd0683en;,citation_doi=10.4060/cd0683en;,citation_isbn=978-92-5-138763-4;,citation_issn=2410-5902;">
+<meta name="citation_reference" content="citation_title=The global carrageenan industry;,citation_author=Jing Zhang;,citation_author=Zannie Langford;,citation_author=Scott Waldron;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_doi=10.4324/9781003183860-3;,citation_inbook_title=Globalisation and livelihood transformations in the indonesian seaweed industry;">
+<meta name="citation_reference" content="citation_title=Tropical seaweed farming: Trends, problems and opportunities: Focus on kappaphycus and eucheuma of commerce;,citation_editor=Anicia Q. Hurtado;,citation_editor=Alan T. Critchley;,citation_editor=Iain C. Neish;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_doi=10.1007/978-3-319-63498-2;,citation_isbn=978-3-319-63497-5;,citation_volume=9;,citation_series_title=Developments in applied phycology;">
+<meta name="citation_reference" content="citation_title=The cultivation of kappaphycus and eucheuma in tropical and sub-tropical waters;,citation_author=Leila Hayashi;,citation_author=Renata P. Reis;,citation_author=Alex Alves Santos;,citation_author=Beatriz Castelar;,citation_author=Daniel Robledo;,citation_author=Gloria Batista Vega;,citation_author=Flower E. Msuya;,citation_author=K. Eswaran;,citation_author=Suhaimi Md. Yasir;,citation_author=Majid Khan Majahar Ali;,citation_author=Anicia Q. Hurtado;,citation_editor=Anicia Q. Hurtado;,citation_editor=Alan T. Critchley;,citation_editor=Iain C. Neish;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_doi=10.1007/978-3-319-63498-2_4;,citation_volume=9;,citation_inbook_title=Tropical seaweed farming: Trends, problems and opportunities;,citation_series_title=Developments in applied phycology;">
+<meta name="citation_reference" content="citation_title=Seaweed farming in africa: Current status and future potential;,citation_author=Flower E Msuya;,citation_author=John Bolton;,citation_author=Fred Pascal;,citation_author=Koushul Narrain;,citation_author=Betty Nyonje;,citation_author=Elizabeth J Cottier-Cook;,citation_publication_date=2022;,citation_cover_date=2022;,citation_year=2022;,citation_issue=2;,citation_doi=10.1007/s10811-021-02676-w;,citation_volume=34;,citation_journal_title=Journal of Applied Phycology;,citation_publisher=Springer;">
+<meta name="citation_reference" content="citation_title=Mapping coastal marine habitats with RGB and multispectral UAS imagery to support seaweed aquaculture management and ecosystem conservation;,citation_author=Isabel Urbina-Barreto;,citation_author=Evangelos Alevizos;,citation_author=Telina Minolalaina Randrianary;,citation_author=Manon Museux;,citation_author=Ravo A Mahandrisoa Randriamaroson;,citation_author=Anne Chauvin;,citation_author=Solofoarisoa Rakotoniaina;,citation_author=Sébastien Jan;,citation_author=Laurent Barillé;,citation_author=Aline Tribollet;,citation_publication_date=2026;,citation_cover_date=2026;,citation_year=2026;,citation_issue=4;,citation_doi=10.3390/drones10040276;,citation_volume=10;,citation_journal_title=Drones;,citation_publisher=MDPI;">
+<meta name="citation_reference" content="citation_title=Integration of precision technology into adaptive phyconomy systems for extensive tropical red seaweed farming;,citation_author=Nelson Vadassery;,citation_author=Iain C Neish;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_doi=10.1007/978-3-031-47806-2_19;,citation_inbook_title=Tropical phyconomy coalition development: Focus on eucheumatoid seaweeds;">
+<meta name="citation_reference" content="citation_title=The unique value proposition for using drones to map coastal ecosystems;,citation_author=Karen E. Joyce;,citation_author=Kate C. Fickas;,citation_author=Michelle Kalamandeen;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_doi=10.1017/cft.2022.7;,citation_volume=1;,citation_journal_title=Cambridge Prisms: Coastal Futures;">
+<meta name="citation_reference" content="citation_title=Mapping the distribution of the alien invasive gracilaria vermiculophylla at the site of its first european introduction;,citation_author=Simon Oiry;,citation_author=Bede Ffinian Rowe Davies;,citation_author=Valérie Stiger-Pouvreau;,citation_author=Pierre Gernez;,citation_author=Laurent Barillé;,citation_publication_date=2025;,citation_cover_date=2025;,citation_year=2025;,citation_doi=10.1016/j.jenvman.2025.126726;,citation_volume=392;,citation_journal_title=Journal of Environmental Management;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Analysis of multispectral indices as a tool for segmenting and quantifying the seaweed kappaphycus alvarezii in a commercial cultivation system;,citation_author=Marcel M Innocentini;,citation_author=Ellen F Rodrigues;,citation_author=Juliano K Mathion;,citation_author=Edilson Carlos Caritá;,citation_author=Lisandro Simão;,citation_author=Mozart Marins;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_issue=3;,citation_doi=10.3390/biomass4030052;,citation_volume=4;,citation_journal_title=Biomass;,citation_publisher=MDPI;">
+<meta name="citation_reference" content="citation_title=Seasionality of kappaphycus alvarezii production trends in south sulawesi using UAV monitoring;,citation_author=Nurjannah Nurdin;,citation_author=Agus Aris;,citation_author=M Akbar AS;,citation_publication_date=2025;,citation_cover_date=2025;,citation_year=2025;,citation_doi=10.1016/j.rsase.2025.101659;,citation_journal_title=Remote Sensing Applications: Society and Environment;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Precision aquaculture drone mapping of the spatial distribution of kappaphycus alvarezii biomass and carrageenan;,citation_author=Nurjannah Nurdin;,citation_author=Evangelos Alevizos;,citation_author=Rajuddin Syamsuddin;,citation_author=Hasni Asis;,citation_author=Elmi Nurhaidah Zainuddin;,citation_author=Agus Aris;,citation_author=Simon Oiry;,citation_author=Guillaume Brunier;,citation_author=Teruhisa Komatsu;,citation_author=Laurent Barillé;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_issue=14;,citation_doi=10.3390/rs15143674;,citation_volume=15;,citation_journal_title=Remote Sensing;,citation_publisher=MDPI;">
+<meta name="citation_reference" content="citation_title=Monitoring the COVID-19-affected indonesian seaweed industry using remote sensing data;,citation_author=Alexandra Langford;,citation_author=Scott Waldron;,citation_author=Hasnawati Saleh;,citation_author=others;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_doi=10.1016/j.marpol.2021.104431;,citation_volume=127;,citation_journal_title=Marine Policy;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=In situ variability of carrageenan content and biomass in the cultivated red macroalga kappaphycus alvarezii with an estimation of its carrageenan stock at the scale of the malasoro bay (indonesia) using satellite image processing;,citation_author=N Setyawidati;,citation_author=PO Liabot;,citation_author=T Perrot;,citation_author=N Radiarta;,citation_author=Eric Deslandes;,citation_author=N Bourgougnon;,citation_author=N Rossi;,citation_author=Valérie Stiger-Pouvreau;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_issue=5;,citation_doi=10.1007/s10811-017-1200-9;,citation_volume=29;,citation_journal_title=Journal of Applied Phycology;,citation_publisher=Springer;">
+<meta name="citation_reference" content="citation_title=Proximal sensing for characterising seaweed aquaculture crop conditions: Optical detection of ice-ice disease;,citation_author=Evangelos Alevizos;,citation_author=Nurjannah Nurdin;,citation_author=Agus Aris;,citation_author=Laurent Barillé;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_issue=18;,citation_doi=10.3390/rs16183502;,citation_volume=16;,citation_journal_title=Remote Sensing;,citation_publisher=MDPI;">
+<meta name="citation_reference" content="citation_title=Variability of kappaphycus alvarezii cultivation in south-sulawesi (indonesia) related to the monsoon shift: Water quality, growth and colour quantification;,citation_author=Laurent Barillé;,citation_author=Iona LR Paterson;,citation_author=Simon Oiry;,citation_author=Agus Aris;,citation_author=Elizabeth J Cook-Cottier;,citation_author=Nurjannah Nurdin;,citation_publication_date=2025;,citation_cover_date=2025;,citation_year=2025;,citation_doi=10.1016/j.aqrep.2024.102557;,citation_volume=40;,citation_journal_title=Aquaculture Reports;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Discriminating seagrasses from green macroalgae in european intertidal areas using high-resolution multispectral drone imagery;,citation_author=Simon Oiry;,citation_author=Bede Ffinian Rowe Davies;,citation_author=Ana I Sousa;,citation_author=Philippe Rosa;,citation_author=Maria Laura Zoffoli;,citation_author=Guillaume Brunier;,citation_author=Pierre Gernez;,citation_author=Laurent Barillé;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_issue=23;,citation_doi=10.3390/rs16234383;,citation_volume=16;,citation_journal_title=Remote Sensing;,citation_publisher=MDPI;">
+<meta name="citation_reference" content="citation_title=From pixels to peaks: Integrating LiDAR and RGB drone imagery to map mussel spat on intertidal rocky shores;,citation_author=Marta Román;,citation_author=Bede FR Davies;,citation_author=Philippe Rosa;,citation_author=Simon Oiry;,citation_author=Pierre Gernez;,citation_author=José A Santiago;,citation_author=Celia Olabarria;,citation_author=Laurent Barillé;,citation_publication_date=2026;,citation_cover_date=2026;,citation_year=2026;,citation_doi=10.1016/j.ecss.2025.109671;,citation_journal_title=Estuarine, Coastal and Shelf Science;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Random forests;,citation_author=Leo Breiman;,citation_publication_date=2001;,citation_cover_date=2001;,citation_year=2001;,citation_volume=45;,citation_journal_title=Machine Learning;,citation_publisher=Kluwer Academic Publishers;">
+<meta name="citation_reference" content="citation_title=Using sentinel-2 satellite imagery to develop microphytobenthos-based water quality indices in estuaries;,citation_author=Simon Oiry;,citation_author=Laurent Barillé;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_doi=10.1016/j.ecolind.2020.107184;,citation_volume=121;,citation_journal_title=Ecological Indicators;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Mapping intertidal oyster farms using unmanned aerial vehicles (UAV) high-resolution multispectral data;,citation_author=Alejandro Roman;,citation_author=Hermansyah Prasyad;,citation_author=Simon Oiry;,citation_author=Bede F. R. Davies;,citation_author=Guillaume Brunier;,citation_author=Laurent Barillé;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_doi=10.1016/j.ecss.2023.108432;,citation_volume=291;,citation_journal_title=Estuarine, Coastal and Shelf Science;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Seagrass ecosystem services and their variability across genera and geographical regions;,citation_author=Lina Mtwana Nordlund;,citation_author=Evamaria W. Koch;,citation_author=Edward B. Barbier;,citation_author=Joel C. Creed;,citation_publication_date=2016;,citation_cover_date=2016;,citation_year=2016;,citation_issue=10;,citation_doi=10.1371/journal.pone.0163091;,citation_volume=11;,citation_journal_title=PLOS ONE;">
+<meta name="citation_reference" content="citation_title=Seagrass ecosystems as a globally significant carbon stock;,citation_author=James W. Fourqurean;,citation_author=Carlos M. Duarte;,citation_author=Hilary Kennedy;,citation_author=Núria Marbà;,citation_author=Marianne Holmer;,citation_author=Miguel A. Mateo;,citation_author=Eugenia T. Apostolaki;,citation_author=Gary A. Kendrick;,citation_author=Dorte Krause-Jensen;,citation_author=Karen J. McGlathery;,citation_author=Oscar Serrano;,citation_publication_date=2012;,citation_cover_date=2012;,citation_year=2012;,citation_doi=10.1038/ngeo1477;,citation_volume=5;,citation_journal_title=Nature Geoscience;">
+<meta name="citation_reference" content="citation_title=Global challenges for seagrass conservation;,citation_author=Richard K. F. Unsworth;,citation_author=Len J. McKenzie;,citation_author=Catherine J. Collier;,citation_author=Leanne C. Cullen-Unsworth;,citation_author=Carlos M. Duarte;,citation_author=Johan S. Eklöf;,citation_author=Jessie C. Jarvis;,citation_author=Benjamin L. Jones;,citation_author=Lina M. Nordlund;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_issue=8;,citation_doi=10.1007/s13280-018-1115-y;,citation_volume=48;,citation_journal_title=Ambio;">
+<meta name="citation_reference" content="citation_title=Long-term declines and recovery of meadow area across the world’s seagrass bioregions;,citation_author=Jillian C. Dunic;,citation_author=Christopher J. Brown;,citation_author=Rod M. Connolly;,citation_author=Mischa P. Turschwell;,citation_author=Isabelle M. Côté;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_issue=17;,citation_doi=10.1111/gcb.15684;,citation_volume=27;,citation_journal_title=Global Change Biology;">
+<meta name="citation_reference" content="citation_title=Mapping coastal marine ecosystems of the national park of banc d’arguin (PNBA) in mauritania using Sentinel-2 imagery;,citation_author=A. Pottier;,citation_author=T. Catry;,citation_author=E. Trégarot;,citation_author=J.-P. Maréchal;,citation_author=V. Fayad;,citation_author=G. David;,citation_author=M. Sidi Cheikh;,citation_author=P. Failler;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_doi=10.1016/j.jag.2021.102419;,citation_volume=102;,citation_journal_title=International Journal of Applied Earth Observation and Geoinformation;">
+<meta name="citation_reference" content="citation_title=Long-term changes in seagrass and benthos at banc d’arguin, mauritania, the premier intertidal system along the east atlantic flyway;,citation_author=El-Hacen M. El-Hacen;,citation_author=Mohamed A. Sidi Cheikh;,citation_author=Tjeerd J. Bouma;,citation_author=Han Olff;,citation_author=Theunis Piersma;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_doi=10.1016/j.gecco.2020.e01364;,citation_volume=24;,citation_journal_title=Global Ecology and Conservation;">
+<meta name="citation_reference" content="citation_title=Seagrass sensitivity to collapse along a hydrodynamic gradient: Evidence from a pristine subtropical intertidal ecosystem;,citation_author=El-Hacen M. El-Hacen;,citation_author=Tjeerd J. Bouma;,citation_author=Laura L. Govers;,citation_author=Theunis Piersma;,citation_author=Han Olff;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_issue=5;,citation_doi=10.1007/s10021-018-0319-0;,citation_volume=22;,citation_journal_title=Ecosystems;">
+<meta name="citation_reference" content="citation_title=Seasonal cycle of desert aerosols in western africa: Analysis of the coastal transition with passive and active sensors;,citation_author=Habib Senghor;,citation_author=Éric Machu;,citation_author=Frédéric Hourdin;,citation_author=Amadou Thierno Gaye;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_issue=13;,citation_doi=10.5194/acp-17-8395-2017;,citation_volume=17;,citation_journal_title=Atmospheric Chemistry and Physics;">
+<meta name="citation_reference" content="citation_title=Seasonal provenance changes in present-day saharan dust collected in and off mauritania;,citation_author=Carmen A. Friese;,citation_author=Johannes A. Hateren;,citation_author=Christoph Vogt;,citation_author=Gerhard Fischer;,citation_author=Jan-Berend W. Stuut;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_issue=16;,citation_doi=10.5194/acp-17-10163-2017;,citation_volume=17;,citation_journal_title=Atmospheric Chemistry and Physics;">
+<meta name="citation_reference" content="citation_title=Environmental factors controlling the seasonal variability in particle size distribution of modern saharan dust deposited off cape blanc;,citation_author=Carmen A. Friese;,citation_author=Michèle Does;,citation_author=Ute Merkel;,citation_author=Morten H. Iversen;,citation_author=Gerhard Fischer;,citation_author=Jan-Berend W. Stuut;,citation_publication_date=2016;,citation_cover_date=2016;,citation_year=2016;,citation_doi=10.1016/j.aeolia.2016.04.005;,citation_volume=22;,citation_journal_title=Aeolian Research;">
+<meta name="citation_reference" content="citation_title=Atmospheric correction of ocean color imagery through thick layers of saharan dust;,citation_author=Cyril Moulin;,citation_author=Howard R. Gordon;,citation_author=Richard M. Chomko;,citation_author=Violeta F. Banzon;,citation_author=Robert H. Evans;,citation_publication_date=2001;,citation_cover_date=2001;,citation_year=2001;,citation_issue=1;,citation_doi=10.1029/2000GL011803;,citation_volume=28;,citation_journal_title=Geophysical Research Letters;">
+<meta name="citation_reference" content="citation_title=Sen2Cor for Sentinel-2;,citation_author=Magdalena Main-Knorn;,citation_author=Bringfried Pflug;,citation_author=Jérôme Louis;,citation_author=Vincent Debaecker;,citation_author=Uwe Müller-Wilm;,citation_author=Ferran Gascon;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_doi=10.1117/12.2278218;,citation_volume=10427;,citation_conference_title=Image and signal processing for remote sensing XXIII;,citation_conference=SPIE;">
+<meta name="citation_reference" content="citation_title=Sentinel-2 MultiSpectral Instrument (MSI) data processing for aquatic science applications: Demonstrations and validations;,citation_author=Nima Pahlevan;,citation_author=Sudipta Sarkar;,citation_author=Bryan A. Franz;,citation_author=S. V. Balasubramanian;,citation_author=Junjun He;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_doi=10.1016/j.rse.2017.08.033;,citation_volume=201;,citation_journal_title=Remote Sensing of Environment;">
+<meta name="citation_reference" content="citation_title=Assessment of atmospheric correction algorithms for the Sentinel-2A MultiSpectral Imager over coastal and inland waters;,citation_author=M. A. Warren;,citation_author=S. G. H. Simis;,citation_author=V. Martinez-Vicente;,citation_author=K. Poser;,citation_author=M. Bresciani;,citation_author=K. Alikas;,citation_author=E. Spyrakos;,citation_author=C. Giardino;,citation_author=A. Ansper;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_doi=10.1016/j.rse.2019.03.018;,citation_volume=225;,citation_journal_title=Remote Sensing of Environment;">
+<meta name="citation_reference" content="citation_title=Adaptation of the dark spectrum fitting atmospheric correction for aquatic applications of the Landsat and Sentinel-2 archives;,citation_author=Quinten Vanhellemont;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_doi=10.1016/j.rse.2019.03.010;,citation_volume=225;,citation_journal_title=Remote Sensing of Environment;">
+<meta name="citation_reference" content="citation_title=Evaluation of Sentinel-2/MSI atmospheric correction algorithms over two contrasted french coastal waters;,citation_author=Quang-Tu Bui;,citation_author=Cédric Jamet;,citation_author=Vincent Vantrepotte;,citation_author=Xavier Mériaux;,citation_author=Arnaud Cauvin;,citation_author=Mohamed Abdelillah Mograne;,citation_publication_date=2022;,citation_cover_date=2022;,citation_year=2022;,citation_issue=5;,citation_doi=10.3390/rs14051099;,citation_volume=14;,citation_journal_title=Remote Sensing;">
+<meta name="citation_reference" content="citation_title=Mapping mediterranean seagrasses with Sentinel-2 imagery;,citation_author=Dimosthenis Traganos;,citation_author=Peter Reinartz;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_doi=10.1016/j.marpolbul.2017.06.075;,citation_volume=134;,citation_journal_title=Marine Pollution Bulletin;">
+<meta name="citation_reference" content="citation_title=Toward a coordinated global observing system for seagrasses and marine macroalgae;,citation_author=J. Emmett Duffy;,citation_author=Lisandro Benedetti-Cecchi;,citation_author=Joaquin Trinanes;,citation_author=Frank E. Muller-Karger;,citation_author=Rohani Ambo-Rappe;,citation_author=Christoffer Boström;,citation_author=Alejandro H. Buschmann;,citation_author=Jarrett Byrnes;,citation_author=Robert G. Coles;,citation_author=Joel Creed;,citation_author=Leanne C. Cullen-Unsworth;,citation_author=Guillermo Diaz-Pulido;,citation_author=Carlos M. Duarte;,citation_author=Graham J. Edgar;,citation_author=Miguel Fortes;,citation_author=Gustavo Goni;,citation_author=Chuanmin Hu;,citation_author=Xiaoping Huang;,citation_author=Catriona L. Hurd;,citation_author=Craig Johnson;,citation_author=Brenda Konar;,citation_author=Dorte Krause-Jensen;,citation_author=Kira Krumhansl;,citation_author=Peter Macreadie;,citation_author=Helene Marsh;,citation_author=Len J. McKenzie;,citation_author=Nova Mieszkowska;,citation_author=Patricia Miloslavich;,citation_author=Enrique Montes;,citation_author=Masahiro Nakaoka;,citation_author=Kjell Magnus Norderhaug;,citation_author=Lina M. Nordlund;,citation_author=Robert J. Orth;,citation_author=Anchana Prathep;,citation_author=Nathan F. Putman;,citation_author=Jimena Samper-Villarreal;,citation_author=Ester A. Serrão;,citation_author=Frederick Short;,citation_author=Isabel S. Pinto;,citation_author=Peter Steinberg;,citation_author=Rick Stuart-Smith;,citation_author=Richard K. F. Unsworth;,citation_author=Mike Keulen;,citation_author=Brigitta I. Tussenbroek;,citation_author=Mengqiu Wang;,citation_author=Michelle Waycott;,citation_author=Lauren V. Weatherdon;,citation_author=Thomas Wernberg;,citation_author=Siti M. Yaakub;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_doi=10.3389/fmars.2019.00317;,citation_volume=6;,citation_journal_title=Frontiers in Marine Science;">
+<meta name="citation_reference" content="citation_title=The value of estuarine and coastal ecosystem services;,citation_author=Edward B. Barbier;,citation_author=Sally D. Hacker;,citation_author=Chris Kennedy;,citation_author=Evamaria W. Koch;,citation_author=Adrian C. Stier;,citation_author=Brian R. Silliman;,citation_publication_date=2011;,citation_cover_date=2011;,citation_year=2011;,citation_issue=2;,citation_doi=10.1890/10-1510.1;,citation_volume=81;,citation_journal_title=Ecological Monographs;">
+<meta name="citation_reference" content="citation_title=A global crisis for seagrass ecosystems;,citation_author=Robert J. Orth;,citation_author=Tim J. B. Carruthers;,citation_author=William C. Dennison;,citation_author=Carlos M. Duarte;,citation_author=James W. Fourqurean;,citation_author=Kenneth L. Heck;,citation_author=A. Randall Hughes;,citation_author=Gary A. Kendrick;,citation_author=W. Judson Kenworthy;,citation_author=Suzanne Olyarnik;,citation_author=Frederick T. Short;,citation_author=Michelle Waycott;,citation_author=Susan L. Williams;,citation_publication_date=2006;,citation_cover_date=2006;,citation_year=2006;,citation_issue=12;,citation_doi=10.1641/0006-3568(2006)56[987:AGCFSE]2.0.CO;2;,citation_volume=56;,citation_journal_title=BioScience;">
+<meta name="citation_reference" content="citation_title=Accelerating loss of seagrasses across the globe threatens coastal ecosystems;,citation_author=Michelle Waycott;,citation_author=Carlos M. Duarte;,citation_author=Tim J. B. Carruthers;,citation_author=Robert J. Orth;,citation_author=William C. Dennison;,citation_author=Suzanne Olyarnik;,citation_author=Ainsley Calladine;,citation_author=James W. Fourqurean;,citation_author=Kenneth L. Heck;,citation_author=A. Randall Hughes;,citation_author=Gary A. Kendrick;,citation_author=W. Judson Kenworthy;,citation_author=Frederick T. Short;,citation_author=Susan L. Williams;,citation_publication_date=2009;,citation_cover_date=2009;,citation_year=2009;,citation_issue=30;,citation_doi=10.1073/pnas.0905620106;,citation_volume=106;,citation_journal_title=Proceedings of the National Academy of Sciences;">
+<meta name="citation_reference" content="citation_title=Seagrass meadows support global fisheries production;,citation_author=Richard K. F. Unsworth;,citation_author=Lina M. Nordlund;,citation_author=Leanne C. Cullen-Unsworth;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_issue=1;,citation_doi=10.1111/conl.12566;,citation_volume=12;,citation_journal_title=Conservation Letters;">
+<meta name="citation_reference" content="citation_title=A three-stage symbiosis forms the foundation of seagrass ecosystems;,citation_author=Tjisse Heide;,citation_author=Laura L. Govers;,citation_author=Jimmy Fouw;,citation_author=Han Olff;,citation_author=Matthijs Geest;,citation_author=Marieke M. Katwijk;,citation_author=Theunis Piersma;,citation_author=Johan Koppel;,citation_author=Brian R. Silliman;,citation_author=Alfons J. P. Smolders;,citation_author=Jan A. Gils;,citation_publication_date=2012;,citation_cover_date=2012;,citation_year=2012;,citation_issue=6087;,citation_doi=10.1126/science.1219973;,citation_volume=336;,citation_journal_title=Science;">
+<meta name="citation_reference" content="citation_title=Drought, mutualism breakdown, and landscape-scale degradation of seagrass beds;,citation_author=Jimmy Fouw;,citation_author=Laura L. Govers;,citation_author=Johan Koppel;,citation_author=Jim Belzen;,citation_author=Wouter Dorigo;,citation_author=Mohammed A. Sidi Cheikh;,citation_author=Marjolijn J. A. Christianen;,citation_author=Karin J. Reijden;,citation_author=Matthijs Geest;,citation_author=Theunis Piersma;,citation_author=Alfons J. P. Smolders;,citation_author=Han Olff;,citation_author=Leon P. M. Lamers;,citation_author=Jan A. Gils;,citation_author=Tjisse Heide;,citation_publication_date=2016;,citation_cover_date=2016;,citation_year=2016;,citation_issue=8;,citation_doi=10.1016/j.cub.2016.02.023;,citation_volume=26;,citation_journal_title=Current Biology;">
+<meta name="citation_reference" content="citation_title=A satellite view of aerosols in the climate system;,citation_author=Yoram J. Kaufman;,citation_author=Didier Tanré;,citation_author=Olivier Boucher;,citation_publication_date=2002;,citation_cover_date=2002;,citation_year=2002;,citation_issue=6903;,citation_doi=10.1038/nature01091;,citation_volume=419;,citation_journal_title=Nature;">
+<meta name="citation_reference" content="citation_title=Mineral dust aerosols over the sahara: Meteorological controls on emission and transport and implications for modeling;,citation_author=Peter Knippertz;,citation_author=Martin C. Todd;,citation_publication_date=2012;,citation_cover_date=2012;,citation_year=2012;,citation_issue=1;,citation_doi=10.1029/2011RG000362;,citation_volume=50;,citation_journal_title=Reviews of Geophysics;">
+<meta name="citation_reference" content="citation_title=Towards understanding temporal and spatial dynamics of seagrass landscapes using time-series remote sensing;,citation_author=Mitchell B. Lyons;,citation_author=Chris M. Roelfsema;,citation_author=Stuart R. Phinn;,citation_publication_date=2013;,citation_cover_date=2013;,citation_year=2013;,citation_doi=10.1016/j.ecss.2013.01.015;,citation_volume=120;,citation_journal_title=Estuarine, Coastal and Shelf Science;">
+<meta name="citation_reference" content="citation_title=Multi-temporal mapping of seagrass cover, species and biomass: A semi-automated object based image analysis approach;,citation_author=Chris M. Roelfsema;,citation_author=Mitchell Lyons;,citation_author=Eva M. Kovacs;,citation_author=Paul Maxwell;,citation_author=Megan I. Saunders;,citation_author=Jimena Samper-Villarreal;,citation_author=Stuart R. Phinn;,citation_publication_date=2014;,citation_cover_date=2014;,citation_year=2014;,citation_doi=10.1016/j.rse.2014.05.001;,citation_volume=150;,citation_journal_title=Remote Sensing of Environment;">
+<meta name="citation_reference" content="citation_title=Wind, surface water temperature, surface salinity and pollution in the area of the banc d’arguin, mauritania;,citation_author=Sidina Ould Dedah;,citation_publication_date=1993;,citation_cover_date=1993;,citation_year=1993;,citation_issue=1;,citation_volume=258;,citation_journal_title=Hydrobiologia;,citation_publisher=Springer;">
+<meta name="citation_reference" content="citation_title=Sentinel-2 level-2A algorithm theoretical basis document;,citation_author=European Space Agency;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_fulltext_html_url=https://step.esa.int/thirdparties/sen2cor/2.10.0/docs/S2-PDGS-MPC-L2A-ATBD-V2.10.0.pdf;,citation_technical_report_institution=European Space Agency;,citation_technical_report_number=S2-PDGS-MPC-L2A-ATBD;">
+<meta name="citation_reference" content="citation_title=Multi- and hyperspectral classification of soft-bottom intertidal vegetation using a spectral library for coastal biodiversity remote sensing;,citation_author=Bede Ffinian Rowe Davies;,citation_author=Pierre Gernez;,citation_author=Andréa Geraud;,citation_author=Simon Oiry;,citation_author=Philippe Rosa;,citation_author=Maria Laura Zoffoli;,citation_author=Laurent Barillé;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_doi=10.1016/j.rse.2023.113554;,citation_volume=290;,citation_journal_title=Remote Sensing of Environment;">
+<meta name="citation_reference" content="citation_title=A sentinel watching over inter-tidal seagrass phenology across western europe and north africa;,citation_author=Bede Ffinian Rowe Davies;,citation_author=Simon Oiry;,citation_author=Philippe Rosa;,citation_author=Maria Laura Zoffoli;,citation_author=Ana I. Sousa;,citation_author=Oliver R. Thomas;,citation_author=Dan A. Smale;,citation_author=Melanie C. Austen;,citation_author=Lauren Biermann;,citation_author=Martin J. Attrill;,citation_author=Alejandro Román;,citation_author=Gabriel Navarro;,citation_author=Anne-Laure Barillé;,citation_author=Nicolas Harin;,citation_author=Daniel Clewley;,citation_author=Victor Martinez-Vicente;,citation_author=Pierre Gernez;,citation_author=Laurent Barillé;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_doi=10.1038/s43247-024-01543-z;,citation_volume=5;,citation_journal_title=Communications Earth &amp;amp;amp; Environment;">
+<meta name="citation_reference" content="citation_title=Intertidal seagrass extent from sentinel-2 time-series show distinct trajectories in western europe;,citation_author=Bede Ffinian Rowe Davies;,citation_author=Simon Oiry;,citation_author=Philippe Rosa;,citation_author=Maria Laura Zoffoli;,citation_author=Ana I. Sousa;,citation_author=Oliver R. Thomas;,citation_author=Dan A. Smale;,citation_author=Melanie C. Austen;,citation_author=Lauren Biermann;,citation_author=Martin J. Attrill;,citation_author=Alejandro Román;,citation_author=Gabriel Navarro;,citation_author=Anne-Laure Barillé;,citation_author=Nicolas Harin;,citation_author=Daniel Clewley;,citation_author=Victor Martinez-Vicente;,citation_author=Pierre Gernez;,citation_author=Laurent Barillé;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_doi=10.1016/j.rse.2024.114340;,citation_volume=312;,citation_journal_title=Remote Sensing of Environment;">
+<meta name="citation_reference" content="citation_title=The functioning of the ecosystem of banc d’arguin, mauritania: A review;,citation_author=W. J. Wolff;,citation_author=J. Van der Land;,citation_author=P. H. Nienhuis;,citation_author=P. De Wilde;,citation_publication_date=1993;,citation_cover_date=1993;,citation_year=1993;,citation_doi=10.1007/BF00006198;,citation_volume=258;,citation_journal_title=Hydrobiologia;">
+<meta name="citation_reference" content="citation_title=Classification and change detection using landsat TM data: When and how to correct atmospheric effects?;,citation_author=Conghe Song;,citation_author=Curtis E. Woodcock;,citation_author=Karen C. Seto;,citation_author=Mary Pax Lenney;,citation_author=Scott A. Macomber;,citation_publication_date=2001;,citation_cover_date=2001;,citation_year=2001;,citation_issue=2;,citation_doi=10.1016/S0034-4257(00)00169-3;,citation_volume=75;,citation_journal_title=Remote Sensing of Environment;">
+<meta name="citation_reference" content="citation_title=Atmospheric correction inter-comparison exercise, ACIX-II land: An assessment of atmospheric correction processors for Landsat 8 and Sentinel-2 over land;,citation_author=Georgia Doxani;,citation_author=Eric F. Vermote;,citation_author=Jean-Claude Roger;,citation_author=Sergii Skakun;,citation_author=Ferran Gascon;,citation_author=Alan Collison;,citation_author=Liesbeth De Keukelaere;,citation_author=Camille Desjardins;,citation_author=David Frantz;,citation_author=Olivier Hagolle;,citation_author=Minsu Kim;,citation_author=Jérôme Louis;,citation_author=Fabio Pacifici;,citation_author=Bringfried Pflug;,citation_author=Hervé Poilvé;,citation_author=Didier Ramon;,citation_author=Rudolf Richter;,citation_author=Feng Yin;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_doi=10.1016/j.rse.2022.113412;,citation_volume=285;,citation_journal_title=Remote Sensing of Environment;">
+</head>
+
+  <body class="quarto-notebook quarto-light">
+    <div id="quarto-embed-header" class="headroom fixed-top bg-primary">
+      
+      <a onclick="window.quartoBackToArticle(); return false;" class="btn btn-primary quarto-back-link" href=""><i class="bi bi-caret-left"></i> Back to Article</a>
+      <h6><i class="bi bi-journal-code"></i> Article Notebook</h6>
+
+            <a href="./index.qmd" class="btn btn-primary quarto-download-embed" download="index.qmd">Download Source</a>
+          </div>
+
+     <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Spatio-Temporal dynamics of the intertidal seagrass meadow of Banc d’Arguin, Mauritania, in a context of high atmospheric complexity.</h1>
+          </div>
+
+    
+    <div class="quarto-title-meta-container">
+      <div class="quarto-title-meta-column-start">
+            <div class="quarto-title-meta-author">
+          <div class="quarto-title-meta-heading">Authors</div>
+          <div class="quarto-title-meta-heading">Affiliations</div>
+          
+                <div class="quarto-title-meta-contents">
+            <p class="author">Simon Oiry <a href="mailto:oirysimon@gmail.com" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> <a href="https://orcid.org/0000-0001-7161-5246" class="quarto-title-author-orcid" aria-label="ORCID profile for Simon Oiry"> <img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+                      </p>
+                    <p class="affiliation">
+                        Consiglio Nazionale delle Ricerche, Istituto di Scienze Marine (CNR-ISMAR), 34149 Trieste, Italy
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Pierre Gernez <a href="https://orcid.org/0000-0003-2055-410X" class="quarto-title-author-orcid" aria-label="ORCID profile for Pierre Gernez"> <img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Laurent Barillé <a href="https://orcid.org/0000-0001-5138-2684" class="quarto-title-author-orcid" aria-label="ORCID profile for Laurent Barillé"> <img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">El-Hacen Mohamed El-Hacen <a href="https://orcid.org/0000-0002-0628-7335" class="quarto-title-author-orcid" aria-label="ORCID profile for El-Hacen Mohamed El-Hacen"> <img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        BirdEyes, Centre for Global Ecological Change at the Faculties of Science &amp; Engineering and Campus Fryslân, Wirdumerdijk, Leeuwarden, The Netherlands
+                      </p>
+                    <p class="affiliation">
+                        Parc National du Banc d’Arguin, Tavregh Zeina, Nouakchott, Mauritania
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Jim de Fouw <a href="https://orcid.org/0000-0002-0922-1331" class="quarto-title-author-orcid" aria-label="ORCID profile for Jim de Fouw"> <img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Department of Coastal systems, NIOZ Royal Netherlands Institute for Sea Research, Texel, Netherlands
+                      </p>
+                  </div>
+                    </div>
+        
+        <div class="quarto-title-meta">
+
+                      
+                <div>
+            <div class="quarto-title-meta-heading">Published</div>
+            <div class="quarto-title-meta-contents">
+              <p class="date">October 12, 2026</p>
+            </div>
+          </div>
+          
+                
+              </div>
+      </div>
+      <div class="quarto-title-meta-column-end quarto-other-formats-target">
+      </div>
+    </div>
+
+    <div>
+      <div class="abstract">
+        <div class="block-title">Abstract</div>
+        To be Written
+      </div>
+    </div>
+
+    <div>
+      <div class="keywords">
+        <div class="block-title">Keywords</div>
+        <p>To be Written</p>
+      </div>
+    </div>
+
+    <div class="quarto-other-links-text-target">
+    </div>  </div>
+</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#alternative-title-propositions" id="toc-alternative-title-propositions" class="nav-link active" data-scroll-target="#alternative-title-propositions"><span class="header-section-number">1</span> Alternative Title propositions :</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">2</span> Introduction</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">      
+
+       <div class="cell-container"><div class="cell-decorator"><pre>In [1]:</pre></div><div class="cell" data-python.reticulate="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">reticulate.conda_binary =</span> <span class="st">"C:/Users/Simon/miniconda3/Scripts/conda.exe"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">use_condaenv</span>(<span class="st">"ArguinSatellite_2026"</span>, <span class="at">required =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">conda =</span> <span class="st">"C:/Users/Simon/miniconda3/Scripts/conda.exe"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div></div>
+<section id="alternative-title-propositions" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Alternative Title propositions :</h1>
+<ul>
+<li>Mapping intertidal seagrass dynamics under Saharan dust: atmospheric correction and Sentinel-2 time-series analysis in Banc d’Arguin</li>
+<li>Spatiotemporal dynamics of intertidal seagrass in Banc d’Arguin, Mauritania from Sentinel-2 imagery: overcoming atmospheric-correction challenges under Saharan dust</li>
+</ul>
+</section>
+<section id="introduction" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Introduction</h1>
+<p>Seagrasses are marine angiosperms that form highly productive meadows across shallow coastal waters <span class="citation" data-cites="Orth2006Crisis">(<a href="#ref-Orth2006Crisis" role="doc-biblioref">Orth et al., 2006</a>)</span>. By creating three-dimensional habitat, attenuating waves, stabilising sediments and recycling nutrients, these foundation species support diverse assemblages of invertebrates, fishes, birds and marine megafauna <span class="citation" data-cites="Waycott2009Loss">(<a href="#ref-Waycott2009Loss" role="doc-biblioref">Waycott et al., 2009</a>)</span>. Their ecological functions translate into services that include nursery habitat and fisheries support, shoreline protection, water-quality regulation and long-term organic-carbon storage <span class="citation" data-cites="Barbier2011Value Nordlund2016SeagrassServices Fourqurean2012Carbon Unsworth2019Challenges">(<a href="#ref-Barbier2011Value" role="doc-biblioref">Barbier et al., 2011</a>; <a href="#ref-Fourqurean2012Carbon" role="doc-biblioref">Fourqurean et al., 2012</a>; <a href="#ref-Nordlund2016SeagrassServices" role="doc-biblioref">Nordlund et al., 2016</a>; <a href="#ref-Unsworth2019Challenges" role="doc-biblioref">Unsworth et al., 2019</a>)</span>. Yet seagrass meadows are exposed to multiple, often interacting pressures, including coastal development, eutrophication, altered sediment regimes, destructive fishing and anchoring, and climate-driven warming and extreme events <span class="citation" data-cites="Orth2006Crisis Waycott2009Loss">(<a href="#ref-Orth2006Crisis" role="doc-biblioref">Orth et al., 2006</a>; <a href="#ref-Waycott2009Loss" role="doc-biblioref">Waycott et al., 2009</a>)</span>. A synthesis of 547 sites estimated a net loss of 19.1% of the surveyed meadow area since 1884, while also revealing strong regional heterogeneity and recent recovery at some locations <span class="citation" data-cites="Dunic2021Declines">(<a href="#ref-Dunic2021Declines" role="doc-biblioref">Dunic et al., 2021</a>)</span>. This variability makes sustained, spatially explicit observation essential: global trends cannot substitute for local evidence, and recovery cannot be distinguished from continued degradation without repeatable measurements <span class="citation" data-cites="Duffy2019Observing">(<a href="#ref-Duffy2019Observing" role="doc-biblioref">Duffy et al., 2019</a>)</span>. The Parc National du Banc d’Arguin (PNBA), Mauritania, is an exceptional case. Located at the interface between the Sahara and the eastern boundary upwelling system of the North Atlantic, this approximately 12,000-km² protected seascape contains one of the largest remaining seagrass systems in Africa <span class="citation" data-cites="Wolff1993Banc Pottier2021Mapping">(<a href="#ref-Pottier2021Mapping" role="doc-biblioref">Pottier et al., 2021</a>; <a href="#ref-Wolff1993Banc" role="doc-biblioref">Wolff et al., 1993</a>)</span>. A recent park-wide habitat map estimated about 772 km² of seagrass, comprising approximately 353 km² of intertidal meadow dominated by <em>Zostera noltei</em> and 419 km² of predominantly subtidal meadow dominated by <em>Cymodocea nodosa</em> <span class="citation" data-cites="Pottier2021Mapping">(<a href="#ref-Pottier2021Mapping" role="doc-biblioref">Pottier et al., 2021</a>)</span>. These meadows sustain the benthic food web, provide habitat and nursery grounds for fishes and invertebrates, and underpin a site used by more than two million migratory waterbirds along the East Atlantic Flyway <span class="citation" data-cites="vanderHeide2012Symbiosis ElHacen2020LongTerm">(<a href="#ref-ElHacen2020LongTerm" role="doc-biblioref">El-Hacen et al., 2020</a>; <a href="#ref-vanderHeide2012Symbiosis" role="doc-biblioref"><span class="nocase">van der Heide et al.</span>, 2012</a>)</span>. Their extent does not imply ecological stability: between spatially comprehensive surveys conducted in 1986 and 2014, seagrass cover increased approximately twofold while macrozoobenthic community composition and estimated secondary production changed markedly <span class="citation" data-cites="ElHacen2020LongTerm">(<a href="#ref-ElHacen2020LongTerm" role="doc-biblioref">El-Hacen et al., 2020</a>)</span>. The Banc d’Arguin meadow is therefore both a globally important conservation asset and a dynamic ecosystem whose trajectories require reliable observation <span class="citation" data-cites="deFouw2016Drought ElHacen2020LongTerm">(<a href="#ref-deFouw2016Drought" role="doc-biblioref"><span class="nocase">de Fouw et al.</span>, 2016</a>; <a href="#ref-ElHacen2020LongTerm" role="doc-biblioref">El-Hacen et al., 2020</a>)</span>.</p>
+<p>The environmental setting of Banc d’Arguin is governed by the juxtaposition of a hyper-arid desert margin, broad shallow tidal flats and the wind-driven Mauritanian upwelling system <span class="citation" data-cites="Wolff1993Banc ould1993wind">(<a href="#ref-ould1993wind" role="doc-biblioref">Ould Dedah, 1993</a>; <a href="#ref-Wolff1993Banc" role="doc-biblioref">Wolff et al., 1993</a>)</span>. Freshwater input is negligible, precipitation is generally below 100 mm yr⁻¹, and persistent northerly winds help control waves, currents, sediment redistribution and exchanges between the bank and adjacent shelf <span class="citation" data-cites="Wolff1993Banc ould1993wind">(<a href="#ref-ould1993wind" role="doc-biblioref">Ould Dedah, 1993</a>; <a href="#ref-Wolff1993Banc" role="doc-biblioref">Wolff et al., 1993</a>)</span>. Wind forcing is strongly seasonal: mean speeds reported for the intertidal system rise to about 9 m s⁻¹ in May–June and decline to about 6 m s⁻¹ in November–December <span class="citation" data-cites="ould1993wind">(<a href="#ref-ould1993wind" role="doc-biblioref">Ould Dedah, 1993</a>)</span>. This annual cycle is embedded within the latitudinal migration of the Intertropical Convergence Zone, which reorganises both the origin and vertical pathway of mineral-dust transport over northwestern Africa <span class="citation" data-cites="Knippertz2012Dust">(<a href="#ref-Knippertz2012Dust" role="doc-biblioref">Knippertz and Todd, 2012</a>)</span>. During winter, dust reaching coastal Mauritania is transported mainly in low-level north-easterly trade winds from Western Saharan and regional sources; during summer, transport increasingly occurs within the elevated Saharan Air Layer and draws on sources in Mauritania, Mali and farther east <span class="citation" data-cites="Senghor2017SeasonalCycle Friese2017Provenance">(<a href="#ref-Friese2017Provenance" role="doc-biblioref">Friese et al., 2017</a>; <a href="#ref-Senghor2017SeasonalCycle" role="doc-biblioref">Senghor et al., 2017</a>)</span>. Superimposed on this seasonality are discrete dust outbreaks, including events that deliver anomalously coarse particles offshore <span class="citation" data-cites="Friese2016ParticleSize">(<a href="#ref-Friese2016ParticleSize" role="doc-biblioref">Friese et al., 2016</a>)</span>. This aerosol regime creates a particular obstacle to optical monitoring of Banc d’Arguin, where low-tide habitat mapping depends on preserving the spectral consistency of exposed intertidal surfaces across acquisition dates <span class="citation" data-cites="Song2001Atmospheric">(<a href="#ref-Song2001Atmospheric" role="doc-biblioref">Song et al., 2001</a>)</span>. Each usable acquisition captures a highly heterogeneous coastal mosaic comprising dense and sparse <em>Zostera noltei</em>, wet and dry sediment, tidal pools and adjacent bright desert surfaces <span class="citation" data-cites="Pottier2021Mapping">(<a href="#ref-Pottier2021Mapping" role="doc-biblioref">Pottier et al., 2021</a>)</span>. Above this mosaic, mineral-dust abundance, particle-size distribution, source region and absorption properties vary seasonally and among individual outbreaks <span class="citation" data-cites="Kaufman2002Aerosols Knippertz2012Dust Friese2016ParticleSize">(<a href="#ref-Friese2016ParticleSize" role="doc-biblioref">Friese et al., 2016</a>; <a href="#ref-Kaufman2002Aerosols" role="doc-biblioref">Kaufman et al., 2002</a>; <a href="#ref-Knippertz2012Dust" role="doc-biblioref">Knippertz and Todd, 2012</a>)</span>. These changes can alter the apparent brightness and spectral shape of otherwise unchanged intertidal targets, producing both spatial gradients within a scene and radiometric offsets among acquisition dates <span class="citation" data-cites="Song2001Atmospheric Doxani2023ACIX">(<a href="#ref-Doxani2023ACIX" role="doc-biblioref">Doxani et al., 2023</a>; <a href="#ref-Song2001Atmospheric" role="doc-biblioref">Song et al., 2001</a>)</span>. The difficulty is compounded by the way Sen2Cor, the atmospheric correction algorithm routinely applied on Sentinel-2 images by the European Space Agency, estimates aerosol optical thickness <span class="citation" data-cites="MainKnorn2017Sen2Cor">(<a href="#ref-MainKnorn2017Sen2Cor" role="doc-biblioref">Main-Knorn et al., 2017</a>)</span>. The processor preferentially retrieves aerosol information over reference targets with known spectral behaviour, particularly dense dark vegetation, and uses fallback information or default values where suitable reference areas are unavailable <span class="citation" data-cites="ESA2021Sen2CorATBD MainKnorn2017Sen2Cor">(<a href="#ref-ESA2021Sen2CorATBD" role="doc-biblioref">European Space Agency, 2021</a>; <a href="#ref-MainKnorn2017Sen2Cor" role="doc-biblioref">Main-Knorn et al., 2017</a>)</span>. In the hyper-arid Banc d’Arguin landscape, dominated by bright desert surfaces and an intertidal zone that alternates among vegetation, moist sediment, bare sediment and shallow pools, the availability and representativeness of such reference targets cannot be assumed <span class="citation" data-cites="Wolff1993Banc Pottier2021Mapping">(<a href="#ref-Pottier2021Mapping" role="doc-biblioref">Pottier et al., 2021</a>; <a href="#ref-Wolff1993Banc" role="doc-biblioref">Wolff et al., 1993</a>)</span>. An aerosol model adequate for one acquisition may consequently leave a different residual bias in another <span class="citation" data-cites="Doxani2023ACIX">(<a href="#ref-Doxani2023ACIX" role="doc-biblioref">Doxani et al., 2023</a>)</span>. Thick, absorbing Saharan dust has already been shown to defeat conventional atmospheric correction off western Africa <span class="citation" data-cites="Moulin2001Dust">(<a href="#ref-Moulin2001Dust" role="doc-biblioref">Moulin et al., 2001</a>)</span>, while comparative evaluations demonstrate that processor performance is strongly environment-dependent <span class="citation" data-cites="Warren2019Assessment Bui2022Evaluation Doxani2023ACIX">(<a href="#ref-Bui2022Evaluation" role="doc-biblioref">Bui et al., 2022</a>; <a href="#ref-Doxani2023ACIX" role="doc-biblioref">Doxani et al., 2023</a>; <a href="#ref-Warren2019Assessment" role="doc-biblioref">Warren et al., 2019</a>)</span>. For this study, the central requirement is therefore not merely to retrieve plausible reflectance for a single date, but to preserve the field-measured spectral relationships among exposed intertidal targets across acquisitions made under contrasting dust conditions <span class="citation" data-cites="Song2001Atmospheric Doxani2023ACIX">(<a href="#ref-Doxani2023ACIX" role="doc-biblioref">Doxani et al., 2023</a>; <a href="#ref-Song2001Atmospheric" role="doc-biblioref">Song et al., 2001</a>)</span>.</p>
+<p>Mapping exposed intertidal <em>Zostera noltei</em> requires stable spectral relationships among seagrass canopies, wet and dry sediment, macroalgae and residual tidal pools. Discrimination is particularly challenging where seagrasses and co-occurring green macroalgae, which share major photosynthetic pigments, produce partly overlapping multispectral signatures <span class="citation" data-cites="Davies2023Spectral">(<a href="#ref-Davies2023Spectral" role="doc-biblioref">Davies et al., 2023</a>)</span>. Nevertheless, spectral-library experiments have shown that machine-learning classifiers can distinguish soft-bottom intertidal vegetation at Sentinel-2 spectral resolution, with little improvement obtained by increasing spectral resolution beyond approximately ten bands <span class="citation" data-cites="Davies2023Spectral">(<a href="#ref-Davies2023Spectral" role="doc-biblioref">Davies et al., 2023</a>)</span>. Building on this foundation, Davies et al.&nbsp;developed the Intertidal Classification of Europe: Categorising Reflectance of Emerged Areas of Marine vegetation with Sentinel-2 (ICE CREAMS v1.0), a multiclass neural network trained with extensive drone-derived labels to identify seagrass and other exposed intertidal habitats <span class="citation" data-cites="Davies2024Phenology">(<a href="#ref-Davies2024Phenology" role="doc-biblioref">Davies et al., 2024a</a>)</span>. Independent validation across approximately 12,000 Sentinel-2 pixels yielded an overall accuracy of 0.82 for seagrass presence or absence, and subsequent applications resolved both seasonal phenology across 12 North-East Atlantic meadows and contrasting interannual trajectories at six European sites <span class="citation" data-cites="Davies2024Phenology Davies2024Trajectories">(<a href="#ref-Davies2024Phenology" role="doc-biblioref">Davies et al., 2024a</a>, <a href="#ref-Davies2024Trajectories" role="doc-biblioref">2024b</a>)</span>. These results establish ICE CREAMS as a scalable framework for intertidal seagrass monitoring, but transferring the classifier among dates and regions presupposes that the spectral relationships encoded by the model are preserved in the input imagery <span class="citation" data-cites="Davies2024Phenology Davies2024Trajectories Song2001Atmospheric">(<a href="#ref-Davies2024Phenology" role="doc-biblioref">Davies et al., 2024a</a>, <a href="#ref-Davies2024Trajectories" role="doc-biblioref">2024b</a>; <a href="#ref-Song2001Atmospheric" role="doc-biblioref">Song et al., 2001</a>)</span>. Under the variable aerosol loads of Banc d’Arguin, incomplete correction can alter both the magnitude and shape of target spectra <span class="citation" data-cites="Song2001Atmospheric Doxani2023ACIX">(<a href="#ref-Doxani2023ACIX" role="doc-biblioref">Doxani et al., 2023</a>; <a href="#ref-Song2001Atmospheric" role="doc-biblioref">Song et al., 2001</a>)</span>. A classifier trained on one radiometric condition may then encounter another: unchanged seagrass can migrate in feature space, while atmospheric variability can be misinterpreted as habitat gain, loss or change in cover <span class="citation" data-cites="Song2001Atmospheric">(<a href="#ref-Song2001Atmospheric" role="doc-biblioref">Song et al., 2001</a>)</span>. This problem is particularly consequential for time-series analysis, for which consistency among dates is at least as important as the accuracy of any single scene <span class="citation" data-cites="Lyons2013TimeSeries Roelfsema2014Multitemporal">(<a href="#ref-Lyons2013TimeSeries" role="doc-biblioref">Lyons et al., 2013</a>; <a href="#ref-Roelfsema2014Multitemporal" role="doc-biblioref">Roelfsema et al., 2014</a>)</span>. Sentinel-2 has already demonstrated the feasibility of mapping the PNBA’s coastal habitats, with a single-date supervised classification attaining more than 80% overall accuracy <span class="citation" data-cites="Pottier2021Mapping">(<a href="#ref-Pottier2021Mapping" role="doc-biblioref">Pottier et al., 2021</a>)</span>. However, a static inventory cannot establish the timing, persistence or spatial pattern of ecological change <span class="citation" data-cites="Lyons2013TimeSeries Davies2024Trajectories">(<a href="#ref-Davies2024Trajectories" role="doc-biblioref">Davies et al., 2024b</a>; <a href="#ref-Lyons2013TimeSeries" role="doc-biblioref">Lyons et al., 2013</a>)</span>. Conversely, the pronounced differences observed between the 1986 and 2014 benthic surveys demonstrate the value of long-term comparison but do not resolve the intervening trajectory <span class="citation" data-cites="ElHacen2020LongTerm">(<a href="#ref-ElHacen2020LongTerm" role="doc-biblioref">El-Hacen et al., 2020</a>)</span>. A radiometrically consistent satellite record could bridge these scales by tracking expansion, contraction and fragmentation at frequencies unattainable through field surveys alone <span class="citation" data-cites="Davies2024Phenology Davies2024Trajectories">(<a href="#ref-Davies2024Phenology" role="doc-biblioref">Davies et al., 2024a</a>, <a href="#ref-Davies2024Trajectories" role="doc-biblioref">2024b</a>)</span>. Without such a record, managers cannot confidently separate ecological change from retrieval artefacts, establish contemporary baselines, identify persistent hotspots of loss, evaluate conservation measures or target field surveillance <span class="citation" data-cites="Unsworth2019Challenges Duffy2019Observing">(<a href="#ref-Duffy2019Observing" role="doc-biblioref">Duffy et al., 2019</a>; <a href="#ref-Unsworth2019Challenges" role="doc-biblioref">Unsworth et al., 2019</a>)</span>. More broadly, incomplete information on meadow status and condition remains a major barrier to seagrass conservation, and coordinated observing frameworks explicitly call for the integration of field measurements with repeated satellite mapping <span class="citation" data-cites="Unsworth2019Challenges Duffy2019Observing">(<a href="#ref-Duffy2019Observing" role="doc-biblioref">Duffy et al., 2019</a>; <a href="#ref-Unsworth2019Challenges" role="doc-biblioref">Unsworth et al., 2019</a>)</span>. Resolving atmospheric-correction uncertainty is thus a prerequisite not only for classification accuracy, but also for defensible conservation assessments and policy decisions in the PNBA <span class="citation" data-cites="Song2001Atmospheric Doxani2023ACIX">(<a href="#ref-Doxani2023ACIX" role="doc-biblioref">Doxani et al., 2023</a>; <a href="#ref-Song2001Atmospheric" role="doc-biblioref">Song et al., 2001</a>)</span>.</p>
+<p>This study addresses that bottleneck by establishing a locally validated workflow for mapping the intertidal seagrass meadows of Banc d’Arguin through time. First, we use field hyperspectral measurements acquired over representative seagrass and non-seagrass targets to evaluate Sentinel-2 reflectance produced by Sen2Cor and two alternative atmospheric-correction approaches. The field spectra are matched to the Sentinel-2 spectral response, enabling us to assess both spectral fidelity and temporal consistency and to identify the correction best suited to this dust-influenced coastal environment. Second, we adapt the ICE CREAMS classification framework to the selected reflectance product, so that the habitat model operates on radiometrically coherent inputs rather than on correction-dependent spectral artefacts. Third, we apply the resulting workflow to the Sentinel-2 archive to reconstruct a time series of seagrass distribution and quantify the spatial and temporal dynamics of the intertidal meadow. The following sections describe the field campaign, satellite processing and atmospheric-correction comparison, the adapted classification workflow, and the procedures used to validate maps and derive change metrics.</p>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Barbier2011Value" class="csl-entry" role="listitem">
+Barbier, E.B., Hacker, S.D., Kennedy, C., Koch, E.W., Stier, A.C., Silliman, B.R., 2011. The value of estuarine and coastal ecosystem services. Ecological Monographs 81, 169–193. <a href="https://doi.org/10.1890/10-1510.1">https://doi.org/10.1890/10-1510.1</a>
+</div>
+<div id="ref-Bui2022Evaluation" class="csl-entry" role="listitem">
+Bui, Q.-T., Jamet, C., Vantrepotte, V., Mériaux, X., Cauvin, A., Mograne, M.A., 2022. Evaluation of <span>Sentinel-2/MSI</span> atmospheric correction algorithms over two contrasted french coastal waters. Remote Sensing 14, 1099. <a href="https://doi.org/10.3390/rs14051099">https://doi.org/10.3390/rs14051099</a>
+</div>
+<div id="ref-Davies2023Spectral" class="csl-entry" role="listitem">
+Davies, B.F.R., Gernez, P., Geraud, A., Oiry, S., Rosa, P., Zoffoli, M.L., Barillé, L., 2023. Multi- and hyperspectral classification of soft-bottom intertidal vegetation using a spectral library for coastal biodiversity remote sensing. Remote Sensing of Environment 290, 113554. <a href="https://doi.org/10.1016/j.rse.2023.113554">https://doi.org/10.1016/j.rse.2023.113554</a>
+</div>
+<div id="ref-Davies2024Phenology" class="csl-entry" role="listitem">
+Davies, B.F.R., Oiry, S., Rosa, P., Zoffoli, M.L., Sousa, A.I., Thomas, O.R., Smale, D.A., Austen, M.C., Biermann, L., Attrill, M.J., Román, A., Navarro, G., Barillé, A.-L., Harin, N., Clewley, D., Martinez-Vicente, V., Gernez, P., Barillé, L., 2024a. A sentinel watching over inter-tidal seagrass phenology across western europe and north africa. Communications Earth &amp; Environment 5, 382. <a href="https://doi.org/10.1038/s43247-024-01543-z">https://doi.org/10.1038/s43247-024-01543-z</a>
+</div>
+<div id="ref-Davies2024Trajectories" class="csl-entry" role="listitem">
+Davies, B.F.R., Oiry, S., Rosa, P., Zoffoli, M.L., Sousa, A.I., Thomas, O.R., Smale, D.A., Austen, M.C., Biermann, L., Attrill, M.J., Román, A., Navarro, G., Barillé, A.-L., Harin, N., Clewley, D., Martinez-Vicente, V., Gernez, P., Barillé, L., 2024b. Intertidal seagrass extent from sentinel-2 time-series show distinct trajectories in western europe. Remote Sensing of Environment 312, 114340. <a href="https://doi.org/10.1016/j.rse.2024.114340">https://doi.org/10.1016/j.rse.2024.114340</a>
+</div>
+<div id="ref-deFouw2016Drought" class="csl-entry" role="listitem">
+<span class="nocase">de Fouw, J., Govers, L.L., van de Koppel, J., van Belzen, J., Dorigo, W., Sidi Cheikh, M.A., Christianen, M.J.A., van der Reijden, K.J., van der Geest, M., Piersma, T., Smolders, A.J.P., Olff, H., Lamers, L.P.M., van Gils, J.A., van der Heide, T.</span>, 2016. Drought, mutualism breakdown, and landscape-scale degradation of seagrass beds. Current Biology 26, 1051–1056. <a href="https://doi.org/10.1016/j.cub.2016.02.023">https://doi.org/10.1016/j.cub.2016.02.023</a>
+</div>
+<div id="ref-Doxani2023ACIX" class="csl-entry" role="listitem">
+Doxani, G., Vermote, E.F., Roger, J.-C., Skakun, S., Gascon, F., Collison, A., De Keukelaere, L., Desjardins, C., Frantz, D., Hagolle, O., Kim, M., Louis, J., Pacifici, F., Pflug, B., Poilvé, H., Ramon, D., Richter, R., Yin, F., 2023. Atmospheric correction inter-comparison exercise, <span>ACIX-II</span> land: An assessment of atmospheric correction processors for <span>Landsat 8</span> and <span>Sentinel-2</span> over land. Remote Sensing of Environment 285, 113412. <a href="https://doi.org/10.1016/j.rse.2022.113412">https://doi.org/10.1016/j.rse.2022.113412</a>
+</div>
+<div id="ref-Duffy2019Observing" class="csl-entry" role="listitem">
+Duffy, J.E., Benedetti-Cecchi, L., Trinanes, J., Muller-Karger, F.E., Ambo-Rappe, R., Boström, C., Buschmann, A.H., Byrnes, J., Coles, R.G., Creed, J., Cullen-Unsworth, L.C., Diaz-Pulido, G., Duarte, C.M., Edgar, G.J., Fortes, M., Goni, G., Hu, C., Huang, X., Hurd, C.L., Johnson, C., Konar, B., Krause-Jensen, D., Krumhansl, K., Macreadie, P., Marsh, H., McKenzie, L.J., Mieszkowska, N., Miloslavich, P., Montes, E., Nakaoka, M., Norderhaug, K.M., Nordlund, L.M., Orth, R.J., Prathep, A., Putman, N.F., Samper-Villarreal, J., Serrão, E.A., Short, F., Pinto, I.S., Steinberg, P., Stuart-Smith, R., Unsworth, R.K.F., Keulen, M. van, Tussenbroek, B.I. van, Wang, M., Waycott, M., Weatherdon, L.V., Wernberg, T., Yaakub, S.M., 2019. Toward a coordinated global observing system for seagrasses and marine macroalgae. Frontiers in Marine Science 6, 317. <a href="https://doi.org/10.3389/fmars.2019.00317">https://doi.org/10.3389/fmars.2019.00317</a>
+</div>
+<div id="ref-Dunic2021Declines" class="csl-entry" role="listitem">
+Dunic, J.C., Brown, C.J., Connolly, R.M., Turschwell, M.P., Côté, I.M., 2021. Long-term declines and recovery of meadow area across the world’s seagrass bioregions. Global Change Biology 27, 4096–4109. <a href="https://doi.org/10.1111/gcb.15684">https://doi.org/10.1111/gcb.15684</a>
+</div>
+<div id="ref-ElHacen2020LongTerm" class="csl-entry" role="listitem">
+El-Hacen, E.-H.M., Sidi Cheikh, M.A., Bouma, T.J., Olff, H., Piersma, T., 2020. Long-term changes in seagrass and benthos at banc d’arguin, mauritania, the premier intertidal system along the east atlantic flyway. Global Ecology and Conservation 24, e01364. <a href="https://doi.org/10.1016/j.gecco.2020.e01364">https://doi.org/10.1016/j.gecco.2020.e01364</a>
+</div>
+<div id="ref-ESA2021Sen2CorATBD" class="csl-entry" role="listitem">
+European Space Agency, 2021. <a href="https://step.esa.int/thirdparties/sen2cor/2.10.0/docs/S2-PDGS-MPC-L2A-ATBD-V2.10.0.pdf">Sentinel-2 level-2A algorithm theoretical basis document</a> (No. S2-PDGS-MPC-L2A-ATBD). European Space Agency.
+</div>
+<div id="ref-Fourqurean2012Carbon" class="csl-entry" role="listitem">
+Fourqurean, J.W., Duarte, C.M., Kennedy, H., Marbà, N., Holmer, M., Mateo, M.A., Apostolaki, E.T., Kendrick, G.A., Krause-Jensen, D., McGlathery, K.J., Serrano, O., 2012. Seagrass ecosystems as a globally significant carbon stock. Nature Geoscience 5, 505–509. <a href="https://doi.org/10.1038/ngeo1477">https://doi.org/10.1038/ngeo1477</a>
+</div>
+<div id="ref-Friese2016ParticleSize" class="csl-entry" role="listitem">
+Friese, C.A., Does, M. van der, Merkel, U., Iversen, M.H., Fischer, G., Stuut, J.-B.W., 2016. Environmental factors controlling the seasonal variability in particle size distribution of modern saharan dust deposited off cape blanc. Aeolian Research 22, 165–179. <a href="https://doi.org/10.1016/j.aeolia.2016.04.005">https://doi.org/10.1016/j.aeolia.2016.04.005</a>
+</div>
+<div id="ref-Friese2017Provenance" class="csl-entry" role="listitem">
+Friese, C.A., Hateren, J.A. van, Vogt, C., Fischer, G., Stuut, J.-B.W., 2017. Seasonal provenance changes in present-day saharan dust collected in and off mauritania. Atmospheric Chemistry and Physics 17, 10163–10193. <a href="https://doi.org/10.5194/acp-17-10163-2017">https://doi.org/10.5194/acp-17-10163-2017</a>
+</div>
+<div id="ref-Kaufman2002Aerosols" class="csl-entry" role="listitem">
+Kaufman, Y.J., Tanré, D., Boucher, O., 2002. A satellite view of aerosols in the climate system. Nature 419, 215–223. <a href="https://doi.org/10.1038/nature01091">https://doi.org/10.1038/nature01091</a>
+</div>
+<div id="ref-Knippertz2012Dust" class="csl-entry" role="listitem">
+Knippertz, P., Todd, M.C., 2012. Mineral dust aerosols over the sahara: Meteorological controls on emission and transport and implications for modeling. Reviews of Geophysics 50, RG1007. <a href="https://doi.org/10.1029/2011RG000362">https://doi.org/10.1029/2011RG000362</a>
+</div>
+<div id="ref-Lyons2013TimeSeries" class="csl-entry" role="listitem">
+Lyons, M.B., Roelfsema, C.M., Phinn, S.R., 2013. Towards understanding temporal and spatial dynamics of seagrass landscapes using time-series remote sensing. Estuarine, Coastal and Shelf Science 120, 42–53. <a href="https://doi.org/10.1016/j.ecss.2013.01.015">https://doi.org/10.1016/j.ecss.2013.01.015</a>
+</div>
+<div id="ref-MainKnorn2017Sen2Cor" class="csl-entry" role="listitem">
+Main-Knorn, M., Pflug, B., Louis, J., Debaecker, V., Müller-Wilm, U., Gascon, F., 2017. <span>Sen2Cor</span> for <span>Sentinel-2</span>, in: Image and Signal Processing for Remote Sensing XXIII. SPIE, p. 1042704. <a href="https://doi.org/10.1117/12.2278218">https://doi.org/10.1117/12.2278218</a>
+</div>
+<div id="ref-Moulin2001Dust" class="csl-entry" role="listitem">
+Moulin, C., Gordon, H.R., Chomko, R.M., Banzon, V.F., Evans, R.H., 2001. Atmospheric correction of ocean color imagery through thick layers of saharan dust. Geophysical Research Letters 28, 5–8. <a href="https://doi.org/10.1029/2000GL011803">https://doi.org/10.1029/2000GL011803</a>
+</div>
+<div id="ref-Nordlund2016SeagrassServices" class="csl-entry" role="listitem">
+Nordlund, L.M., Koch, E.W., Barbier, E.B., Creed, J.C., 2016. Seagrass ecosystem services and their variability across genera and geographical regions. PLOS ONE 11, e0163091. <a href="https://doi.org/10.1371/journal.pone.0163091">https://doi.org/10.1371/journal.pone.0163091</a>
+</div>
+<div id="ref-Orth2006Crisis" class="csl-entry" role="listitem">
+Orth, R.J., Carruthers, T.J.B., Dennison, W.C., Duarte, C.M., Fourqurean, J.W., Heck, K.L., Hughes, A.R., Kendrick, G.A., Kenworthy, W.J., Olyarnik, S., Short, F.T., Waycott, M., Williams, S.L., 2006. A global crisis for seagrass ecosystems. BioScience 56, 987–996. <a href="https://doi.org/10.1641/0006-3568(2006)56[987:AGCFSE]2.0.CO;2">https://doi.org/10.1641/0006-3568(2006)56[987:AGCFSE]2.0.CO;2</a>
+</div>
+<div id="ref-ould1993wind" class="csl-entry" role="listitem">
+Ould Dedah, S., 1993. Wind, surface water temperature, surface salinity and pollution in the area of the banc d’arguin, mauritania. Hydrobiologia 258, 9–19.
+</div>
+<div id="ref-Pottier2021Mapping" class="csl-entry" role="listitem">
+Pottier, A., Catry, T., Trégarot, E., Maréchal, J.-P., Fayad, V., David, G., Sidi Cheikh, M., Failler, P., 2021. Mapping coastal marine ecosystems of the national park of banc d’arguin (<span>PNBA</span>) in mauritania using <span>Sentinel-2</span> imagery. International Journal of Applied Earth Observation and Geoinformation 102, 102419. <a href="https://doi.org/10.1016/j.jag.2021.102419">https://doi.org/10.1016/j.jag.2021.102419</a>
+</div>
+<div id="ref-Roelfsema2014Multitemporal" class="csl-entry" role="listitem">
+Roelfsema, C.M., Lyons, M., Kovacs, E.M., Maxwell, P., Saunders, M.I., Samper-Villarreal, J., Phinn, S.R., 2014. Multi-temporal mapping of seagrass cover, species and biomass: A semi-automated object based image analysis approach. Remote Sensing of Environment 150, 172–187. <a href="https://doi.org/10.1016/j.rse.2014.05.001">https://doi.org/10.1016/j.rse.2014.05.001</a>
+</div>
+<div id="ref-Senghor2017SeasonalCycle" class="csl-entry" role="listitem">
+Senghor, H., Machu, É., Hourdin, F., Gaye, A.T., 2017. Seasonal cycle of desert aerosols in western africa: Analysis of the coastal transition with passive and active sensors. Atmospheric Chemistry and Physics 17, 8395–8410. <a href="https://doi.org/10.5194/acp-17-8395-2017">https://doi.org/10.5194/acp-17-8395-2017</a>
+</div>
+<div id="ref-Song2001Atmospheric" class="csl-entry" role="listitem">
+Song, C., Woodcock, C.E., Seto, K.C., Lenney, M.P., Macomber, S.A., 2001. Classification and change detection using landsat <span>TM</span> data: When and how to correct atmospheric effects? Remote Sensing of Environment 75, 230–244. <a href="https://doi.org/10.1016/S0034-4257(00)00169-3">https://doi.org/10.1016/S0034-4257(00)00169-3</a>
+</div>
+<div id="ref-Unsworth2019Challenges" class="csl-entry" role="listitem">
+Unsworth, R.K.F., McKenzie, L.J., Collier, C.J., Cullen-Unsworth, L.C., Duarte, C.M., Eklöf, J.S., Jarvis, J.C., Jones, B.L., Nordlund, L.M., 2019. Global challenges for seagrass conservation. Ambio 48, 801–815. <a href="https://doi.org/10.1007/s13280-018-1115-y">https://doi.org/10.1007/s13280-018-1115-y</a>
+</div>
+<div id="ref-vanderHeide2012Symbiosis" class="csl-entry" role="listitem">
+<span class="nocase">van der Heide, T., Govers, L.L., de Fouw, J., Olff, H., van der Geest, M., van Katwijk, M.M., Piersma, T., van de Koppel, J., Silliman, B.R., Smolders, A.J.P., van Gils, J.A.</span>, 2012. A three-stage symbiosis forms the foundation of seagrass ecosystems. Science 336, 1432–1434. <a href="https://doi.org/10.1126/science.1219973">https://doi.org/10.1126/science.1219973</a>
+</div>
+<div id="ref-Warren2019Assessment" class="csl-entry" role="listitem">
+Warren, M.A., Simis, S.G.H., Martinez-Vicente, V., Poser, K., Bresciani, M., Alikas, K., Spyrakos, E., Giardino, C., Ansper, A., 2019. Assessment of atmospheric correction algorithms for the <span>Sentinel-2A MultiSpectral Imager</span> over coastal and inland waters. Remote Sensing of Environment 225, 267–289. <a href="https://doi.org/10.1016/j.rse.2019.03.018">https://doi.org/10.1016/j.rse.2019.03.018</a>
+</div>
+<div id="ref-Waycott2009Loss" class="csl-entry" role="listitem">
+Waycott, M., Duarte, C.M., Carruthers, T.J.B., Orth, R.J., Dennison, W.C., Olyarnik, S., Calladine, A., Fourqurean, J.W., Heck, K.L., Hughes, A.R., Kendrick, G.A., Kenworthy, W.J., Short, F.T., Williams, S.L., 2009. Accelerating loss of seagrasses across the globe threatens coastal ecosystems. Proceedings of the National Academy of Sciences 106, 12377–12381. <a href="https://doi.org/10.1073/pnas.0905620106">https://doi.org/10.1073/pnas.0905620106</a>
+</div>
+<div id="ref-Wolff1993Banc" class="csl-entry" role="listitem">
+Wolff, W.J., Van der Land, J., Nienhuis, P.H., De Wilde, P., 1993. The functioning of the ecosystem of banc d’arguin, mauritania: A review. Hydrobiologia 258, 211–222. <a href="https://doi.org/10.1007/BF00006198">https://doi.org/10.1007/BF00006198</a>
+</div>
+</div>
+</section>
+     </main>
+<!-- /main column -->  <script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>  </div> <!-- /content --> 
+  
+</body></html>
