@@ -4,7 +4,7 @@ project:
   render:
     - "index.qmd"
   post-render:
-    - python postprocess_docx_affiliations.py
+    - python3 postprocess_docx_affiliations.py
 manuscript: 
   article: index.qmd
 format:
@@ -12,7 +12,7 @@ format:
     toc: true
     theme: cosmo
   docx:
-    output-file: "MadaKapPy_Paper_2026"
+    output-file: "Arguin_AtmCor_Paper_2026"
     reference-doc: quarto_template.docx
 resources:
   - "!*.qmd"
