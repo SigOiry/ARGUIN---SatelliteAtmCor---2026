@@ -21,3 +21,5 @@ venv/
 .idea/
 .DS_Store
 Thumbs.db
+workinprogress/
+/docs/*.embed.ipynb
