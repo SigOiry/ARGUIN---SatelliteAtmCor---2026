@@ -1,0 +1,47 @@
+run_time_utc: 2026-10-17 17:38:24 UTC
+git_commit: cf273626600fb165401187477ee4ffbbce872ae7
+input_root: Data/Atm_Compare_AOI
+sen2cor_files: 24
+acolite_files: 22
+exact_same_date_pairs: 21
+paired_bands: B01,B02,B03,B04,B05,B06,B07,B08,B8A,B11,B12
+paired_rows_wide: 30723
+unique_spatial_pixels: 1463
+delta_definition: rho_ACOLITE - rho_Sen2Cor
+brightness_definition: per-pixel across-date median of symmetric processor mean across B02,B03,B04
+primary_threshold: within-AOI darkest and brightest thirds; middle third excluded
+sensitivity_thresholds: within-AOI q25/q75, q40/q60, and median split
+uncertainty: nonparametric bootstrap of date-level median dark-minus-bright contrasts; 2000 resamples; seed 183
+ecological_scope: optical darkness is not a validated seagrass label
+R version 4.3.3 (2024-02-29)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 24.04.2 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0 
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.12.0
+
+locale:
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+ [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+ [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+
+time zone: Europe/Paris
+tzcode source: system (glibc)
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] ggplot2_3.4.4      data.table_1.14.10
+
+loaded via a namespace (and not attached):
+ [1] vctrs_0.6.5        svglite_2.1.3      cli_3.6.2          rlang_1.1.3       
+ [5] generics_0.1.3     textshaping_0.3.7  glue_1.7.0         labeling_0.4.3    
+ [9] colorspace_2.1-0   ragg_1.2.7         scales_1.3.0       fansi_1.0.5       
+[13] grid_4.3.3         munsell_0.5.0      tibble_3.2.1       lifecycle_1.0.4   
+[17] compiler_4.3.3     dplyr_1.1.4        RColorBrewer_1.1-3 pkgconfig_2.0.3   
+[21] systemfonts_1.0.5  farver_2.1.1       R6_2.5.1           tidyselect_1.2.0  
+[25] utf8_1.2.4         pillar_1.9.0       magrittr_2.0.3     tools_4.3.3       
+[29] withr_2.5.0        gtable_0.3.4      

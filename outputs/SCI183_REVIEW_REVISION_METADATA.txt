@@ -1,0 +1,9 @@
+exact paired dates: 21
+bands averaged: B02,B03,B04
+slope: OLS ACOLITE~Sen2Cor across pixel medians
+slope caveat: OLS treats Sen2Cor as error-free and is subject to regression dilution; interpret with SD ratio and paired-product correlation
+spatial bootstrap: 4x4 within-AOI coordinate-quantile blocks, 2000 resamples, seed 184
+spatial scope: 16 blocks per AOI; AOI intervals overlap and do not support an AOI-difference claim
+valid-count caveat: identical per-date counts (730 Arel, 733 Iwik) and no evident QA field/masking record in supplied CSVs
+identifiability: constant relative offset and contrast compression are not separable from these paired observations
+CRS assumption: x/y are projected metres; EPSG:32628 is inferred from linked project products but is absent from CSV metadata
